@@ -12,7 +12,7 @@ module shifter(in,shift,sout);
             2'b11: begin 
                 sout = in >> 1;
                 sout[15] = sout[14]; //in[15] copied to to MSB after right bit shift
-            end 
+            end
         endcase
     end
 endmodule

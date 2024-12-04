@@ -38,29 +38,16 @@ module lab7bonus_top(KEY,SW,LEDR,HEX0,HEX1,HEX2,HEX3,HEX4,HEX5);
 
 
     always_comb begin
+        msel = mem_addr[8]; //checks the last bit to check the indicated address. 0 would mean below 255 and 1 would mean abouve 256
+        write  =  ({mem_cmd, msel} == {`MWRITE, 1'b0}); //write choosing
+        enable = ({mem_cmd, msel} == {`MREAD, 1'b0}); //the and gates and stuff
 
-      msel = mem_addr[8]; //checks the last bit to check the indicated address. 0 would mean below 255 and 1 would mean abouve 256
-      write  =  ({mem_cmd, msel} == {`MWRITE, 1'b0}); //write choosing
-      enable = ({mem_cmd, msel} == {`MREAD, 1'b0}); //the and gates and stuff
+        write_address = mem_addr[7:0];
+        read_address = mem_addr[7:0];
+        din = write_data;
 
-      write_address = mem_addr[7:0];
-      read_address = mem_addr[7:0];
-      din = write_data;
-
-      read_data = enable ? dout : {16{1'bz}}; //tri-state driver
-
-      if ({mem_addr, mem_cmd} == {9'h140, `MREAD}) read_data = {8'b0, SW[7:0]}; //desing own logic this reads the switches if mem_cmd and addr are according
-      else read_data = read_data;
-
-      if ({mem_addr, mem_cmd} == {9'h100, `MWRITE}) next_LEDR = write_data[7:0]; //design own logic this writes to the switches if mem_cmd and addr are according
-      else next_LEDR = 8'bx;;
-
-    end 
-
-    always_ff @(posedge ~KEY[0]) begin
-      LEDR[7:0] = next_LEDR;
-    end
-    
+        read_data = enable ? dout : {16{1'bz}}; //tri-state driver
+    end  
 endmodule
 
 

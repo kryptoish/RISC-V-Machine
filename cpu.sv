@@ -77,9 +77,6 @@ module cpu(clk,reset,read_data,write_data,mem_addr,mem_cmd,N,V,Z);
         next_data_addr = load_addr ? datapath_out[8:0] : data_addr;
     end
     
-    // next: first, second and third bit: nsel, second bit loada, third bit loadB, fouth bit asel, 
-    // fifth bit bsel, sixth and 7th bit shift, 8th and 9th bit aluop, 10th bit loadc, 11bit vsel, 
-    // 12bit write  
     always_ff @(posedge clk) begin
         inst_reg = next_inst_reg;
         data_addr = next_data_addr;
@@ -87,10 +84,10 @@ module cpu(clk,reset,read_data,write_data,mem_addr,mem_cmd,N,V,Z);
         
         casex ({present_state, reset}) 
             //all roads lead to rome (`wait)
-            {4'bxxxx, 1'b1} : {present_state, write, load_pc, reset_pc, load_ir} = {`RST, 4'b0110};
-            {`RST, 1'b0} : {present_state, write, addr_sel, load_pc, reset_pc, mem_cmd} = {`IF1, 4'b0100, `MREAD};
-            {`IF1, 1'b0} : {present_state, load_ir} = {`IF2, 1'b1};
-            {`IF2, 1'b0} : {present_state, addr_sel, load_pc, load_ir, mem_cmd} = {`UpdatePC, 3'b010, `MNONE};
+            {4'bxxxx, 1'b1}: {present_state, write, load_pc, reset_pc, load_ir} = {`RST, 4'b0110};
+            {`RST, 1'b0}: {present_state, write, addr_sel, load_pc, reset_pc, mem_cmd} = {`IF1, 4'b0100, `MREAD};
+            {`IF1, 1'b0}: {present_state, load_ir} = {`IF2, 1'b1};
+            {`IF2, 1'b0}: {present_state, addr_sel, load_pc, load_ir, mem_cmd} = {`UpdatePC, 3'b010, `MNONE};
             //make IF1 states+, last state before below is UpdatePC
 
             {`UpdatePC, 1'b0} : begin
@@ -111,14 +108,14 @@ module cpu(clk,reset,read_data,write_data,mem_addr,mem_cmd,N,V,Z);
             end
             
             //ADD & AND branch
-            {`GetA, 1'b0} : {present_state, nsel, loadb, loada} = {`GetB, 4'b0010}; //loads B
-            {`GetB, 1'b0} : {present_state, asel, bsel, loadc, loads} = {`operation,  4'b0010}; //performs operations
+            {`GetA, 1'b0}: {present_state, nsel, loadb, loada} = {`GetB, 4'b0010}; //loads B
+            {`GetB, 1'b0}: {present_state, asel, bsel, loadc, loads} = {`operation,  4'b0010}; //performs operations
 
             //for writing only from B to Rd
-            {`GetBonly, 1'b0} : {present_state, asel, bsel, loadc, loads} = {`operation, 4'b1010};
+            {`GetBonly, 1'b0}: {present_state, asel, bsel, loadc, loads} = {`operation, 4'b1010};
 
             //Get the (shifted) memory address (LDR)
-            {`GetAddr, 1'b0} : begin
+            {`GetAddr, 1'b0}: begin
                 case (opcode) 
                     3'b011: {present_state, loada, loadb, loadc, load_addr, addr_sel, mem_cmd} = {`Dout, 5'b00110, `MREAD}; //might need an extra state for dout
                     3'b100: {present_state, loada, loadb, loadc, load_addr, addr_sel} = {`StoreAddr, 5'b00110};
@@ -145,6 +142,6 @@ module cpu(clk,reset,read_data,write_data,mem_addr,mem_cmd,N,V,Z);
             {`operation, 1'b0} : {present_state, nsel, vsel, write} = {`WriteReg, 5'b01001}; //writing into the register
              //waiter/reset
             {`WriteReg, 1'b0} : {present_state, loada, loadb, loadc, loads, mem_cmd} = {`RST, 4'b0000, `MNONE}; //extra cycle for values to got through (should I go reset or IF1)
-        endcase      
+        endcase
     end
  endmodule

@@ -1,21 +1,17 @@
- module ALU(Ain,Bin,ALUop,out,Z);
-   input [15:0] Ain, Bin;
-   input [1:0] ALUop;
-   output reg [15:0] out;
-   output reg [2:0] Z; //Z[0] = zero flag, Z[1] = neg flag, Z[2] = overflow flag
+module ALU(Ain, Bin, ALUop, out, status);
+	input [15:0] Ain, Bin;
+	input [1:0] ALUop;
+	output [2:0] status;
+	output reg [15:0] out;
 
- always_comb begin 
-   case(ALUop)
-      2'b00 : out = Ain + Bin; //add Ain and Bin
-      2'b01 : out = Ain - Bin; //subtract Ain and Bin
-      2'b10 : out = Ain & Bin; //AND Ain and Bin
-      2'b11 : out = ~Bin; //Negate Bin
-   endcase 
+	assign status[2] = out[15];
+	assign status[1] = (out[15] ^ Ain[15]) & ~(out[15] ^ Bin[15]);
+	assign status[0] = (out == 0);
 
-   //make it better by putting it into the add and subtraction above
-   Z[0] = out[15]; //negative
-   Z[1] = (ALUop == 2'b00) ? ((Ain[15] == Bin[15]) && (out[15] != Ain[15])) : 
-   (ALUop == 2'b01) ? ((Ain[15] != Bin[15]) && (out[15] != Ain[15])) : 1'b0; //improvements could be made
-   Z[2] = out == {16{1'b0}}; //zero
- end 
- endmodule 
+	always_comb case (ALUop)
+		2'b00: out = Ain + Bin;
+		2'b01: out = Ain - Bin;
+		2'b10: out = Ain & Bin;
+		2'b11: out = ~Bin;
+	endcase
+endmodule: ALU
