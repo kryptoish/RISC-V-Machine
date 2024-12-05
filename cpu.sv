@@ -62,23 +62,23 @@ module cpu(clk, reset, mem_data, mem_cmd, mem_addr, out, N, V, Z, halt);
 		3'b1_xx:
 			pc_next = 9'b0;
 		3'b0_01: begin
-			pc_next = PC + 1;
+			pc_next = PC;
 			case ({opcode, cond})
 			/* B. */
 			6'b001_000:
-				pc_next = PC + 1 + sximm8[8:0];
+				pc_next = PC + sximm8[8:0];
 			/* BEQ. */
 			6'b001_001: if (Z)
-				pc_next = PC + 1 + sximm8[8:0];
+				pc_next = PC + sximm8[8:0];
 			/* BNE. */
 			6'b001_010: if (~Z)
-				pc_next = PC + 1 + sximm8[8:0];
+				pc_next = PC + sximm8[8:0];
 			/* BLT. */
 			6'b001_011: if (N !== V)
-				pc_next = PC + 1 + sximm8[8:0];
+				pc_next = PC + sximm8[8:0];
 			/* BLE. */
 			6'b001_100: if (N !== V | Z)
-				pc_next = PC + 1 + sximm8[8:0];
+				pc_next = PC + sximm8[8:0];
 			endcase
 		end
 		/* BX, BLX. */
@@ -86,7 +86,7 @@ module cpu(clk, reset, mem_data, mem_cmd, mem_addr, out, N, V, Z, halt);
 			pc_next = out;
 		/* BL. */
 		3'b0_11:
-			pc_next = PC + 1 + sximm8[8:0];
+			pc_next = PC + sximm8[8:0];
 		/* Next address in memory. */
 		default: pc_next = PC + 1;
 		endcase

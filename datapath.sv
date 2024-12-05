@@ -33,6 +33,6 @@ module datapath(clk, reg_w, reg_a, reg_b, write, loada, loadb, loadc, loads,
 		if (vsel[0]) data_in = datapath_out;
 		if (vsel[1]) data_in = mdata;
 		if (vsel[2]) data_in = sximm8;
-		if (vsel[3]) data_in = {7'b0, PC + 1};
+		if (vsel[3]) data_in = {7'b0, PC};
 	end
 endmodule: datapath
