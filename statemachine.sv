@@ -8,12 +8,12 @@
 
 module statemachine(clk, reset, opcode, op, pc_reset, pc_load, pc_sel,
 		ir_load, addr_sel, mem_cmd, reg_w_sel, reg_a_sel, reg_b_sel,
-		write, loada, loadb, loadc, loads, loadm, asel, bsel, csel, vsel);
+		write, loada, loadb, loadc, loads, loadm, asel, bsel, csel, vsel, halt);
 	input clk, reset;
 	input [1:0] op;
 	input [2:0] opcode;
 	output reg pc_reset, pc_load, ir_load, addr_sel, write, loada, loadb,
-		loadc, loads, loadm, asel, bsel, csel;
+		loadc, loads, loadm, asel, bsel, csel, halt;
 	output reg [1:0] pc_sel, mem_cmd;
 	output reg [2:0] reg_w_sel, reg_a_sel, reg_b_sel;
 	output reg [3:0] vsel;
@@ -23,7 +23,7 @@ module statemachine(clk, reset, opcode, op, pc_reset, pc_load, pc_sel,
 	always_comb begin
 		{pc_reset, pc_load, pc_sel, ir_load, addr_sel, mem_cmd, reg_w_sel,
 			reg_a_sel, reg_b_sel, write, loada, loadb, loadc, loads,
-			loadm, asel, bsel, csel, vsel} = 30'b0;
+			loadm, asel, bsel, csel, vsel, halt} = 31'b0;
 
 		casex ({state, opcode, op})
 		/* Reset state. */
@@ -105,7 +105,7 @@ module statemachine(clk, reset, opcode, op, pc_reset, pc_load, pc_sel,
 
 		/* BL. */
 		{`STATE_DECODE, 5'b010_11}:
-			{pc_sel, reg_w_sel, write, vsel} = 9'b1_100_1_1000;
+			{pc_sel, reg_w_sel, write, vsel} = 10'b11_100_1_1000;
 
 		/* BX, BLX. */
 		{`STATE_DECODE, 5'b010_xx}:
@@ -116,6 +116,9 @@ module statemachine(clk, reset, opcode, op, pc_reset, pc_load, pc_sel,
 		/* BLX. */
 		{`STATE_WRITEBACK, 5'b010_10}:
 			{reg_w_sel, write, vsel} = 8'b100_1_1000;
+
+		{`STATE_HALT, 5'bxxx_xx}:
+			halt = 1'b1;
 
 		default: begin end
 		endcase

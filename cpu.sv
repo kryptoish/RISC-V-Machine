@@ -1,7 +1,7 @@
-module cpu(clk, reset, mem_data, mem_cmd, mem_addr, out, N, V, Z);
+module cpu(clk, reset, mem_data, mem_cmd, mem_addr, out, N, V, Z, halt);
 	input clk, reset;
 	input [15:0] mem_data;
-	output N, V, Z;
+	output N, V, Z, halt;
 	output [1:0] mem_cmd;
 	output [15:0] out;
 	output reg [8:0] mem_addr;
@@ -22,7 +22,7 @@ module cpu(clk, reset, mem_data, mem_cmd, mem_addr, out, N, V, Z);
 	statemachine FSM(clk, reset, opcode, op, pc_reset, pc_load, pc_sel,
 		ir_load, addr_sel, mem_cmd, reg_w_sel, reg_a_sel,
 		reg_b_sel, write, loada, loadb, loadc, loads, loadm, asel, bsel,
-		csel, vsel);
+		csel, vsel, halt);
 
 	datapath DP(clk, reg_w, reg_a, reg_b, write, loada, loadb, loadc, loads,
 		loadm, op, sh, asel, bsel, csel, vsel, sximm5, sximm8,
