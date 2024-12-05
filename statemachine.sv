@@ -6,9 +6,10 @@
 `define STATE_MEM	3'b101
 `define STATE_WRITEBACK	3'b110
 
-module statemachine(clk, reset, opcode, op, pc_reset, pc_load, pc_sel,
-		ir_load, addr_sel, mem_cmd, reg_w_sel, reg_a_sel, reg_b_sel,
-		write, loada, loadb, loadc, loads, loadm, asel, bsel, csel, vsel, halt);
+module statemachine(clk, reset, opcode, op, pc_reset, pc_load, pc_sel, ir_load,
+		addr_sel, mem_cmd, reg_w_sel, reg_a_sel, reg_b_sel, write,
+		loada, loadb, loadc, loads, loadm, asel, bsel, csel, vsel,
+		halt);
 	input clk, reset;
 	input [1:0] op;
 	input [2:0] opcode;
@@ -21,9 +22,10 @@ module statemachine(clk, reset, opcode, op, pc_reset, pc_load, pc_sel,
 	reg [3:0] state;
 
 	always_comb begin
-		{pc_reset, pc_load, pc_sel, ir_load, addr_sel, mem_cmd, reg_w_sel,
-			reg_a_sel, reg_b_sel, write, loada, loadb, loadc, loads,
-			loadm, asel, bsel, csel, vsel, halt} = 31'b0;
+		{pc_reset, pc_load, pc_sel, ir_load, addr_sel, mem_cmd,
+			reg_w_sel, reg_a_sel, reg_b_sel, write, loada, loadb,
+			loadc, loads, loadm, asel, bsel, csel, vsel, halt}
+			= 31'b0;
 
 		casex ({state, opcode, op})
 		/* Reset state. */
@@ -91,9 +93,10 @@ module statemachine(clk, reset, opcode, op, pc_reset, pc_load, pc_sel,
 
 		/* STR. */
 		{`STATE_DECODE, 5'b100_xx}:
-			{reg_a_sel, reg_b_sel, loada, loadb} = 8'b100_010_11;
+			{reg_a_sel, reg_b_sel, csel, loada, loadc}
+				= 9'b100_010_111;
 		{`STATE_EXEC, 5'b100_xx}:
-			{loadc, loadm, bsel, csel} = 4'b1111;
+			{loadm, bsel} = 2'b11;
 		{`STATE_MEM, 5'b100_xx}:
 			mem_cmd = 2'b01;
 		{`STATE_WRITEBACK, 5'b100_xx}:
@@ -107,7 +110,8 @@ module statemachine(clk, reset, opcode, op, pc_reset, pc_load, pc_sel,
 
 		/* BL. */
 		{`STATE_DECODE, 5'b010_11}:
-			{pc_load, pc_sel, reg_w_sel, write, vsel} = 11'b1_11_100_1_1000;
+			{pc_load, pc_sel, reg_w_sel, write, vsel}
+				= 11'b1_11_100_1_1000;
 		{`STATE_EXEC, 5'b010_11}:
 			{addr_sel, mem_cmd} = 3'b1_10;
 
@@ -123,10 +127,11 @@ module statemachine(clk, reset, opcode, op, pc_reset, pc_load, pc_sel,
 
 		/* BLX. */
 		{`STATE_EXEC, 5'b010_10}:
-			{pc_load, pc_sel} = 3'b1_10;
-		{`STATE_WRITEBACK, 5'b010_10}:
-			{addr_sel, mem_cmd, reg_w_sel, write, vsel}
+			{pc_load, pc_sel, reg_w_sel, write, vsel}
 				= 11'b1_10_100_1_1000;
+		{`STATE_WRITEBACK, 5'b010_10}:
+			{addr_sel, mem_cmd}
+				= 3'b1_10;
 
 		{`STATE_HALT, 5'bxxx_xx}:
 			halt = 1'b1;

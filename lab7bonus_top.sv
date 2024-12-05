@@ -35,7 +35,7 @@ endmodule: lab7bonus_top
 module ram(clk, addr, write, din, dout);
 	parameter data_width = 32;
 	parameter addr_width = 4;
-	parameter filename = "data_lab8_stage2.txt";
+	parameter filename = "data.txt";
 
 	input clk;
 	input [addr_width-1:0] addr;
