@@ -105,28 +105,30 @@ module statemachine(clk, reset, opcode, op, pc_reset, pc_load, pc_sel,
 		{`STATE_EXEC, 5'b001_xx}:
 			{addr_sel, mem_cmd} = 3'b1_10;
 
-		/* BL. */
-		{`STATE_DECODE, 5'b010_11}:
+		/* BL, BLX. */
+		{`STATE_DECODE, 5'b010_1x}:
 			{pc_load, pc_sel, reg_w_sel, write, vsel} = 11'b1_11_100_1_1000;
+
+        /* BL. */
 		{`STATE_EXEC, 5'b010_11}:
 			{addr_sel, mem_cmd} = 3'b1_10;
 
-		/* BX, BLX. */
-		{`STATE_DECODE, 5'b010_xx}:
-			{reg_b_sel, loadc, csel} = 5'b010_11;
-
 		/* BX. */
+		{`STATE_DECODE, 5'b010_00}:
+			{reg_b_sel, loadc, csel} = 5'b010_11;
 		{`STATE_EXEC, 5'b010_00}:
 			{pc_load, pc_sel} = 3'b1_10;
 		{`STATE_WRITEBACK, 5'b010_00}:
 			{addr_sel, mem_cmd} = 3'b1_10;
 
 		/* BLX. */
-		{`STATE_EXEC, 5'b010_10}:
+        {`STATE_EXEC, 5'b010_10}:
+			{addr_sel, mem_cmd, reg_b_sel, loadc, csel} = 8'b1_10_010_11;
+		{`STATE_MEM, 5'b010_10}:
 			{pc_load, pc_sel} = 3'b1_10;
 		{`STATE_WRITEBACK, 5'b010_10}:
-			{addr_sel, mem_cmd, reg_w_sel, write, vsel}
-				= 11'b1_10_100_1_1000;
+			{addr_sel, mem_cmd}
+				= 3'b1_10;
 
 		{`STATE_HALT, 5'bxxx_xx}:
 			halt = 1'b1;
@@ -226,7 +228,17 @@ module statemachine(clk, reset, opcode, op, pc_reset, pc_load, pc_sel,
 		{1'b0, `STATE_EXEC, 5'b010_11}:
 			state <= `STATE_IF;
 
-		/* BX, BLX. */
+        /* BLX. */
+        {1'b0, `STATE_DECODE, 5'b010_1x}:
+			state <= `STATE_EXEC;
+		{1'b0, `STATE_EXEC, 5'b010_1x}:
+			state <= `STATE_MEM;
+        {1'b0, `STATE_MEM, 5'b010_1x}:
+			state <= `STATE_WRITEBACK;
+		{1'b0, `STATE_WRITEBACK, 5'b010_1x}:
+			state <= `STATE_IF;
+
+		/* BX. */
 		{1'b0, `STATE_DECODE, 5'b010_xx}:
 			state <= `STATE_EXEC;
 		{1'b0, `STATE_EXEC, 5'b010_xx}:

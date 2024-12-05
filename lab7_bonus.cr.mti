@@ -12,12 +12,12 @@ Model Technology ModelSim - Intel FPGA Edition vlog 10.5b Compiler 2016.10 Oct  
 Top level modules:
 	shifter
 
-} {} {}} C:/Users/krish/Documents/CPEN211_Labs/Simple-Risc-Machine/alu.sv {1 {vlog -work work -sv -stats=none C:/Users/krish/Documents/CPEN211_Labs/Simple-Risc-Machine/alu.sv
+} {} {}} C:/Users/krish/Documents/CPEN211_Labs/Simple-Risc-Machine/statemachine.sv {1 {vlog -work work -sv -stats=none C:/Users/krish/Documents/CPEN211_Labs/Simple-Risc-Machine/statemachine.sv
 Model Technology ModelSim - Intel FPGA Edition vlog 10.5b Compiler 2016.10 Oct  5 2016
--- Compiling module ALU
+-- Compiling module statemachine
 
 Top level modules:
-	ALU
+	statemachine
 
 } {} {}} C:/Users/krish/Documents/CPEN211_Labs/Simple-Risc-Machine/regfile.sv {1 {vlog -work work -sv -stats=none C:/Users/krish/Documents/CPEN211_Labs/Simple-Risc-Machine/regfile.sv
 Model Technology ModelSim - Intel FPGA Edition vlog 10.5b Compiler 2016.10 Oct  5 2016
@@ -27,12 +27,21 @@ Model Technology ModelSim - Intel FPGA Edition vlog 10.5b Compiler 2016.10 Oct  
 Top level modules:
 	regfile
 
-} {} {}} C:/Users/krish/Documents/CPEN211_Labs/Simple-Risc-Machine/statemachine.sv {1 {vlog -work work -sv -stats=none C:/Users/krish/Documents/CPEN211_Labs/Simple-Risc-Machine/statemachine.sv
+} {} {}} C:/Users/krish/Documents/CPEN211_Labs/Simple-Risc-Machine/alu.sv {1 {vlog -work work -sv -stats=none C:/Users/krish/Documents/CPEN211_Labs/Simple-Risc-Machine/alu.sv
 Model Technology ModelSim - Intel FPGA Edition vlog 10.5b Compiler 2016.10 Oct  5 2016
--- Compiling module statemachine
+-- Compiling module ALU
 
 Top level modules:
-	statemachine
+	ALU
+
+} {} {}} C:/Users/krish/Documents/CPEN211_Labs/Simple-Risc-Machine/lab7bonus_top.sv {1 {vlog -work work -sv -stats=none C:/Users/krish/Documents/CPEN211_Labs/Simple-Risc-Machine/lab7bonus_top.sv
+Model Technology ModelSim - Intel FPGA Edition vlog 10.5b Compiler 2016.10 Oct  5 2016
+-- Compiling module lab7bonus_top
+-- Compiling module ram
+-- Compiling module disp
+
+Top level modules:
+	lab7bonus_top
 
 } {} {}} C:/Users/krish/Documents/CPEN211_Labs/Simple-Risc-Machine/lab7bonus_autograder_check.sv {1 {vlog -work work -sv -stats=none C:/Users/krish/Documents/CPEN211_Labs/Simple-Risc-Machine/lab7bonus_autograder_check.sv
 Model Technology ModelSim - Intel FPGA Edition vlog 10.5b Compiler 2016.10 Oct  5 2016
@@ -47,14 +56,5 @@ Model Technology ModelSim - Intel FPGA Edition vlog 10.5b Compiler 2016.10 Oct  
 
 Top level modules:
 	datapath
-
-} {} {}} C:/Users/krish/Documents/CPEN211_Labs/Simple-Risc-Machine/lab7bonus_top.sv {1 {vlog -work work -sv -stats=none C:/Users/krish/Documents/CPEN211_Labs/Simple-Risc-Machine/lab7bonus_top.sv
-Model Technology ModelSim - Intel FPGA Edition vlog 10.5b Compiler 2016.10 Oct  5 2016
--- Compiling module lab7bonus_top
--- Compiling module ram
--- Compiling module disp
-
-Top level modules:
-	lab7bonus_top
 
 } {} {}}

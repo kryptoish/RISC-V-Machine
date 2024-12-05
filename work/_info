@@ -10,7 +10,7 @@ cModel Technology
 dC:/Users/krish/Documents/CPEN211_Labs/lab-7-l1a-kryptoish
 vALU
 Z0 DXx6 sv_std 3 std 0 22 AD7iAPLo6nTIKk<N0eo=D3
-Z1 !s110 1733389722
+Z1 !s110 1733396331
 !i10b 1
 !s100 lin]U_RHgmQgB02SKI<bz3
 IJ_F>;XG6F7f2D_[o;;Qe>2
@@ -26,7 +26,7 @@ Z5 OV;L;10.5b;63
 r1
 !s85 0
 31
-Z6 !s108 1733389722.000000
+Z6 !s108 1733396331.000000
 !s107 C:/Users/krish/Documents/CPEN211_Labs/Simple-Risc-Machine/alu.sv|
 !s90 -reportprogress|300|-work|work|-sv|-stats=none|C:/Users/krish/Documents/CPEN211_Labs/Simple-Risc-Machine/alu.sv|
 !i113 1
@@ -83,25 +83,25 @@ R7
 R8
 vdisp
 R0
-R1
+Z10 !s110 1733396332
 !i10b 1
 !s100 6NFXmNh1>N0?d18Jkl0E>1
 I4@SbF5WBhZ1KKbaghCSPI3
 R2
-Z10 !s105 lab7bonus_top_sv_unit
+Z11 !s105 lab7bonus_top_sv_unit
 S1
 R3
-Z11 w1733389239
-Z12 8C:/Users/krish/Documents/CPEN211_Labs/Simple-Risc-Machine/lab7bonus_top.sv
-Z13 FC:/Users/krish/Documents/CPEN211_Labs/Simple-Risc-Machine/lab7bonus_top.sv
+Z12 w1733389239
+Z13 8C:/Users/krish/Documents/CPEN211_Labs/Simple-Risc-Machine/lab7bonus_top.sv
+Z14 FC:/Users/krish/Documents/CPEN211_Labs/Simple-Risc-Machine/lab7bonus_top.sv
 L0 57
 R5
 r1
 !s85 0
 31
 R6
-Z14 !s107 C:/Users/krish/Documents/CPEN211_Labs/Simple-Risc-Machine/lab7bonus_top.sv|
-Z15 !s90 -reportprogress|300|-work|work|-sv|-stats=none|C:/Users/krish/Documents/CPEN211_Labs/Simple-Risc-Machine/lab7bonus_top.sv|
+Z15 !s107 C:/Users/krish/Documents/CPEN211_Labs/Simple-Risc-Machine/lab7bonus_top.sv|
+Z16 !s90 -reportprogress|300|-work|work|-sv|-stats=none|C:/Users/krish/Documents/CPEN211_Labs/Simple-Risc-Machine/lab7bonus_top.sv|
 !i113 1
 R7
 R8
@@ -131,7 +131,7 @@ R7
 R8
 vlab7bonus_check_tb
 R0
-!s110 1733389221
+R1
 !i10b 1
 !s100 W>JE27U0ABoNLF3j[cU7:1
 I[eI6:kIRTO07X:lVJA>iI0
@@ -147,7 +147,7 @@ R5
 r1
 !s85 0
 31
-!s108 1733389221.000000
+R6
 !s107 C:/Users/krish/Documents/CPEN211_Labs/Simple-Risc-Machine/lab7bonus_autograder_check.sv|
 !s90 -reportprogress|300|-work|work|-sv|-stats=none|C:/Users/krish/Documents/CPEN211_Labs/Simple-Risc-Machine/lab7bonus_autograder_check.sv|
 !i113 1
@@ -155,7 +155,7 @@ R7
 R8
 vlab7bonus_stage2_tb
 R0
-R1
+!s110 1733389722
 !i10b 1
 !s100 M<E^LA7UgiilLmkcf^9790
 Ioo>J3^H2Ci^hj^XMYN^d@3
@@ -171,7 +171,7 @@ R5
 r1
 !s85 0
 31
-R6
+!s108 1733389722.000000
 !s107 C:/Users/krish/Documents/CPEN211_Labs/Simple-Risc-Machine/lab7bonus_stage2_tb.sv|
 !s90 -reportprogress|300|-work|work|-sv|-stats=none|C:/Users/krish/Documents/CPEN211_Labs/Simple-Risc-Machine/lab7bonus_stage2_tb.sv|
 !i113 1
@@ -179,103 +179,103 @@ R7
 R8
 vlab7bonus_top
 R0
-R1
+R10
 !i10b 1
 !s100 >B3zR=bRz1661U=_aGBB]0
 Ij4PR5Xi7@?e2<NI8EKAGM1
 R2
-R10
+R11
 S1
 R3
-R11
 R12
 R13
+R14
 L0 5
 R5
 r1
 !s85 0
 31
 R6
-R14
 R15
+R16
 !i113 1
 R7
 R8
 vram
 R0
-R1
+R10
 !i10b 1
 !s100 1@P`8DEk<<MFES1O@85Cf3
 IPSfmA<`1[5flMAe1Wfg390
 R2
-R10
+R11
 S1
 R3
-R11
 R12
 R13
+R14
 L0 35
 R5
 r1
 !s85 0
 31
 R6
-R14
 R15
+R16
 !i113 1
 R7
 R8
 vregfile
 R0
-R1
+R10
 !i10b 1
 !s100 J;J0C6G;d4a3C5=gAW`ic3
 IacA5f9<6YAn8h>N<;VV@J0
 R2
-Z16 !s105 regfile_sv_unit
+Z17 !s105 regfile_sv_unit
 S1
 R3
 R4
-Z17 8C:/Users/krish/Documents/CPEN211_Labs/Simple-Risc-Machine/regfile.sv
-Z18 FC:/Users/krish/Documents/CPEN211_Labs/Simple-Risc-Machine/regfile.sv
+Z18 8C:/Users/krish/Documents/CPEN211_Labs/Simple-Risc-Machine/regfile.sv
+Z19 FC:/Users/krish/Documents/CPEN211_Labs/Simple-Risc-Machine/regfile.sv
 L0 1
 R5
 r1
 !s85 0
 31
-R6
-Z19 !s107 C:/Users/krish/Documents/CPEN211_Labs/Simple-Risc-Machine/regfile.sv|
-Z20 !s90 -reportprogress|300|-work|work|-sv|-stats=none|C:/Users/krish/Documents/CPEN211_Labs/Simple-Risc-Machine/regfile.sv|
+Z20 !s108 1733396332.000000
+Z21 !s107 C:/Users/krish/Documents/CPEN211_Labs/Simple-Risc-Machine/regfile.sv|
+Z22 !s90 -reportprogress|300|-work|work|-sv|-stats=none|C:/Users/krish/Documents/CPEN211_Labs/Simple-Risc-Machine/regfile.sv|
 !i113 1
 R7
 R8
 vregister
 R0
-R1
+R10
 !i10b 1
 !s100 b6mCnD>Y4QEn73;h0Q^;a3
 Ii2g8:>_Y_anajSLHTMW?K2
 R2
-R16
+R17
 S1
 R3
 R4
-R17
 R18
+R19
 L0 46
 R5
 r1
 !s85 0
 31
-R6
-R19
 R20
+R21
+R22
 !i113 1
 R7
 R8
 vshifter
 R0
-R1
+R10
 !i10b 1
 !s100 k_`Tzl0RT8QFFFSC`NHD83
 IV`T=;;_dORA9D[6Y6A:6P2
@@ -291,7 +291,7 @@ R5
 r1
 !s85 0
 31
-R6
+R20
 !s107 C:/Users/krish/Documents/CPEN211_Labs/Simple-Risc-Machine/shifter.sv|
 !s90 -reportprogress|300|-work|work|-sv|-stats=none|C:/Users/krish/Documents/CPEN211_Labs/Simple-Risc-Machine/shifter.sv|
 !i113 1
@@ -299,7 +299,7 @@ R7
 R8
 vstatemachine
 R0
-R1
+R10
 !i10b 1
 !s100 c>H^dlWIjm;<V1Wj]^Hn91
 I9J^^`IZfbDl]R[_5iElSR3
@@ -315,7 +315,7 @@ R5
 r1
 !s85 0
 31
-R6
+R20
 !s107 C:/Users/krish/Documents/CPEN211_Labs/Simple-Risc-Machine/statemachine.sv|
 !s90 -reportprogress|300|-work|work|-sv|-stats=none|C:/Users/krish/Documents/CPEN211_Labs/Simple-Risc-Machine/statemachine.sv|
 !i113 1
