@@ -1,6 +1,6 @@
 module datapath(clk, reg_w, reg_a, reg_b, write, loada, loadb, loadc, loads,
-		loadm, op, shift, asel, bsel, csel, vsel, sximm5, sximm8, mdata,
-		PC, N, V, Z, datapath_out, data_address);
+		loadm, op, shift, asel, bsel, csel, vsel, sximm5, sximm8,
+		mdata, PC, N, V, Z, datapath_out, data_address);
 	input clk, write, loada, loadb, loadc, loads, loadm, asel, bsel, csel;
 	input [1:0] op, shift;
 	input [2:0] reg_w, reg_a, reg_b;
@@ -20,7 +20,7 @@ module datapath(clk, reg_w, reg_a, reg_b, write, loada, loadb, loadc, loads,
 	ALU U1(ain, bin, op, out, status);
 	register #(16) REG_A(out_a, loada, clk, aout);
 	register #(16) REG_B(out_b, loadb, clk, bout);
-	register #(16) REG_C((csel ? bout : out), loadc, clk, datapath_out);
+	register #(16) REG_C((csel ? out_b : out), loadc, clk, datapath_out);
 	register #(9) REG_M(out[8:0], loadm, clk, data_address);
 	register #(3) REG_S(status, loads, clk, {N, V, Z});
 
@@ -33,6 +33,6 @@ module datapath(clk, reg_w, reg_a, reg_b, write, loada, loadb, loadc, loads,
 		if (vsel[0]) data_in = datapath_out;
 		if (vsel[1]) data_in = mdata;
 		if (vsel[2]) data_in = sximm8;
-		if (vsel[3]) data_in = {8'b0, PC[7:0]};
+		if (vsel[3]) data_in = {7'b0, PC + 1};
 	end
 endmodule: datapath

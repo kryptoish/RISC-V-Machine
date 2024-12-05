@@ -1,28 +1,29 @@
 `define STATE_RESET	3'b000
-`define STATE_IF	3'b001
-`define STATE_DECODE	3'b010
-`define STATE_EXEC	3'b011
-`define STATE_MEM	3'b100
-`define STATE_WRITE	3'b101
+`define STATE_HALT	3'b001
+`define STATE_IF	3'b010
+`define STATE_DECODE	3'b011
+`define STATE_EXEC	3'b100
+`define STATE_MEM	3'b101
+`define STATE_WRITEBACK	3'b110
 
-module statemachine(clk, reset, opcode, op, pc_reset, pc_load, ir_load,
-		addr_sel, mem_cmd, reg_w_sel, reg_a_sel, reg_b_sel, write,
-		loada, loadb, loadc, loads, loadm, asel, bsel, csel, vsel);
+module statemachine(clk, reset, opcode, op, pc_reset, pc_load, pc_sel,
+		ir_load, addr_sel, mem_cmd, reg_w_sel, reg_a_sel, reg_b_sel,
+		write, loada, loadb, loadc, loads, loadm, asel, bsel, csel, vsel);
 	input clk, reset;
 	input [1:0] op;
 	input [2:0] opcode;
 	output reg pc_reset, pc_load, ir_load, addr_sel, write, loada, loadb,
 		loadc, loads, loadm, asel, bsel, csel;
-	output reg [1:0] mem_cmd;
+	output reg [1:0] pc_sel, mem_cmd;
 	output reg [2:0] reg_w_sel, reg_a_sel, reg_b_sel;
 	output reg [3:0] vsel;
 
 	reg [3:0] state;
 
 	always_comb begin
-		{pc_reset, pc_load, ir_load, addr_sel, mem_cmd, reg_w_sel,
+		{pc_reset, pc_load, pc_sel, ir_load, addr_sel, mem_cmd, reg_w_sel,
 			reg_a_sel, reg_b_sel, write, loada, loadb, loadc, loads,
-			loadm, asel, bsel, csel, vsel} = 28'b0;
+			loadm, asel, bsel, csel, vsel} = 30'b0;
 
 		casex ({state, opcode, op})
 		/* Reset state. */
@@ -44,7 +45,7 @@ module statemachine(clk, reset, opcode, op, pc_reset, pc_load, ir_load,
 			{reg_b_sel, loadb} = 4'b001_1;
 		{`STATE_EXEC, 5'b110_00}:
 			{loadc, asel} = 2'b11;
-		{`STATE_WRITE, 5'b110_00}:
+		{`STATE_WRITEBACK, 5'b110_00}:
 			{addr_sel, mem_cmd, reg_w_sel, write, vsel}
 				= 11'b1_10_010_1_0001;
 
@@ -55,7 +56,7 @@ module statemachine(clk, reset, opcode, op, pc_reset, pc_load, ir_load,
 		/* ADD. */
 		{`STATE_EXEC, 5'b101_00}:
 			loadc = 1'b1;
-		{`STATE_WRITE, 5'b101_00}:
+		{`STATE_WRITEBACK, 5'b101_00}:
 			{addr_sel, mem_cmd, reg_w_sel, write, vsel}
 				= 11'b1_10_010_1_0001;
 
@@ -66,14 +67,14 @@ module statemachine(clk, reset, opcode, op, pc_reset, pc_load, ir_load,
 		/* AND. */
 		{`STATE_EXEC, 5'b101_10}:
 			loadc = 1'b1;
-		{`STATE_WRITE, 5'b101_10}:
+		{`STATE_WRITEBACK, 5'b101_10}:
 			{addr_sel, mem_cmd, reg_w_sel, write, vsel}
 				= 11'b1_10_010_1_0001;
 
 		/* MVN. */
 		{`STATE_EXEC, 5'b101_11}:
 			loadc = 1'b1;
-		{`STATE_WRITE, 5'b101_11}:
+		{`STATE_WRITEBACK, 5'b101_11}:
 			{addr_sel, mem_cmd, reg_w_sel, write, vsel}
 				= 11'b1_10_010_1_0001;
 
@@ -84,7 +85,7 @@ module statemachine(clk, reset, opcode, op, pc_reset, pc_load, ir_load,
 			{loadm, bsel} = 2'b11;
 		{`STATE_MEM, 5'b011_xx}:
 			mem_cmd = 2'b10;
-		{`STATE_WRITE, 5'b011_xx}:
+		{`STATE_WRITEBACK, 5'b011_xx}:
 			{addr_sel, mem_cmd, reg_w_sel, write, vsel}
 				= 11'b1_10_010_1_0010;
 
@@ -95,8 +96,27 @@ module statemachine(clk, reset, opcode, op, pc_reset, pc_load, ir_load,
 			{loadc, loadm, bsel, csel} = 4'b1111;
 		{`STATE_MEM, 5'b100_xx}:
 			mem_cmd = 2'b01;
-		{`STATE_WRITE, 5'b100_xx}:
+		{`STATE_WRITEBACK, 5'b100_xx}:
 			{addr_sel, mem_cmd} = 3'b1_10;
+
+		/* B, BEQ, BNE, BLT, BLE. */
+		{`STATE_DECODE, 5'b001_xx}:
+			pc_sel = 2'b01;
+
+		/* BL. */
+		{`STATE_DECODE, 5'b010_11}:
+			{pc_sel, reg_w_sel, write, vsel} = 9'b1_100_1_1000;
+
+		/* BX, BLX. */
+		{`STATE_DECODE, 5'b010_xx}:
+			{reg_b_sel, loadc, csel} = 5'b010_11;
+		{`STATE_EXEC, 5'b010_xx}:
+			pc_sel = 2'b10;
+
+		/* BLX. */
+		{`STATE_WRITEBACK, 5'b010_10}:
+			{reg_w_sel, write, vsel} = 8'b100_1_1000;
+
 		default: begin end
 		endcase
 	end
@@ -114,7 +134,9 @@ module statemachine(clk, reset, opcode, op, pc_reset, pc_load, ir_load,
 
 		/* HALT. */
 		{1'b0, `STATE_DECODE, 5'b111_xx}:
-			state <= `STATE_DECODE;
+			state <= `STATE_HALT;
+		{1'b0, `STATE_HALT, 5'bxxx_xx}:
+			state <= `STATE_HALT;
 
 		/* MOV immediate to register. */
 		{1'b0, `STATE_DECODE, 5'b110_10}:
@@ -124,16 +146,16 @@ module statemachine(clk, reset, opcode, op, pc_reset, pc_load, ir_load,
 		{1'b0, `STATE_DECODE, 5'b110_00}:
 			state <= `STATE_EXEC;
 		{1'b0, `STATE_EXEC, 5'b110_00}:
-			state <= `STATE_WRITE;
-		{1'b0, `STATE_WRITE, 5'b110_00}:
+			state <= `STATE_WRITEBACK;
+		{1'b0, `STATE_WRITEBACK, 5'b110_00}:
 			state <= `STATE_IF;
 
 		/* ADD. */
 		{1'b0, `STATE_DECODE, 5'b101_00}:
 			state <= `STATE_EXEC;
 		{1'b0, `STATE_EXEC, 5'b101_00}:
-			state <= `STATE_WRITE;
-		{1'b0, `STATE_WRITE, 5'b101_00}:
+			state <= `STATE_WRITEBACK;
+		{1'b0, `STATE_WRITEBACK, 5'b101_00}:
 			state <= `STATE_IF;
 
 		/* CMP. */
@@ -146,16 +168,16 @@ module statemachine(clk, reset, opcode, op, pc_reset, pc_load, ir_load,
 		{1'b0, `STATE_DECODE, 5'b101_10}:
 			state <= `STATE_EXEC;
 		{1'b0, `STATE_EXEC, 5'b101_10}:
-			state <= `STATE_WRITE;
-		{1'b0, `STATE_WRITE, 5'b101_10}:
+			state <= `STATE_WRITEBACK;
+		{1'b0, `STATE_WRITEBACK, 5'b101_10}:
 			state <= `STATE_IF;
 
 		/* MVN. */
 		{1'b0, `STATE_DECODE, 5'b101_11}:
 			state <= `STATE_EXEC;
 		{1'b0, `STATE_EXEC, 5'b101_11}:
-			state <= `STATE_WRITE;
-		{1'b0, `STATE_WRITE, 5'b101_11}:
+			state <= `STATE_WRITEBACK;
+		{1'b0, `STATE_WRITEBACK, 5'b101_11}:
 			state <= `STATE_IF;
 
 		/* LDR. */
@@ -164,8 +186,8 @@ module statemachine(clk, reset, opcode, op, pc_reset, pc_load, ir_load,
 		{1'b0, `STATE_EXEC, 5'b011_xx}:
 			state <= `STATE_MEM;
 		{1'b0, `STATE_MEM, 5'b011_xx}:
-			state <= `STATE_WRITE;
-		{1'b0, `STATE_WRITE, 5'b011_xx}:
+			state <= `STATE_WRITEBACK;
+		{1'b0, `STATE_WRITEBACK, 5'b011_xx}:
 			state <= `STATE_IF;
 
 		/* STR. */
@@ -174,8 +196,30 @@ module statemachine(clk, reset, opcode, op, pc_reset, pc_load, ir_load,
 		{1'b0, `STATE_EXEC, 5'b100_xx}:
 			state <= `STATE_MEM;
 		{1'b0, `STATE_MEM, 5'b100_xx}:
-			state <= `STATE_WRITE;
-		{1'b0, `STATE_WRITE, 5'b100_xx}:
+			state <= `STATE_WRITEBACK;
+		{1'b0, `STATE_WRITEBACK, 5'b100_xx}:
+			state <= `STATE_IF;
+
+		/* B, BEQ, BNE, BLT, BLE. */
+		{1'b0, `STATE_DECODE, 5'b001_xx}:
+			state <= `STATE_IF;
+
+		/* BL. */
+		{1'b0, `STATE_DECODE, 5'b010_11}:
+			state <= `STATE_IF;
+
+		/* BX. */
+		{1'b0, `STATE_DECODE, 5'b010_00}:
+			state <= `STATE_EXEC;
+		{1'b0, `STATE_EXEC, 5'b010_00}:
+			state <= `STATE_IF;
+
+		/* BL. */
+		{1'b0, `STATE_DECODE, 5'b010_10}:
+			state <= `STATE_EXEC;
+		{1'b0, `STATE_EXEC, 5'b010_10}:
+			state <= `STATE_WRITEBACK;
+		{1'b0, `STATE_WRITEBACK, 5'b010_10}:
 			state <= `STATE_IF;
 
 		/* Should not happen. Otherwise, an error occurred. */

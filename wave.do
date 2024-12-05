@@ -1,10 +1,11 @@
 radix define states {
 	"3'b000" "RESET",
-	"3'b001" "FETCH",
-	"3'b010" "DECODE",
-	"3'b011" "EXEC",
-	"3'b100" "MEM",
-	"3'b101" "WRITE",
+	"3'b001" "HALT",
+	"3'b010" "FETCH",
+	"3'b011" "DECODE",
+	"3'b100" "EXECUTE",
+	"3'b101" "MEMORY",
+	"3'b110" "WRITEBACK",
 	-default default
 }
 radix define memory {
