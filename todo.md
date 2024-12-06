@@ -33,14 +33,17 @@ IF/ID
 - pc_load
 - pc_sel
 - ir_load
-- reg_w_sel
+<!-- - reg_w_sel
 - reg_a_sel
-- reg_b_sel
+- reg_b_sel -->
+- reg_w
+- reg_a
+- reg_b
 - write
 
 ID/EX
 
-- opcode
+- (opcode)
 - op
 - Rn
 - Rd
@@ -57,15 +60,18 @@ EX/MEM
 - Rd
 - Rm
 
-- mem_cmd
+<!-- - mem_cmd
 - write_addr
-- data_addr
+- data_addr -->
+- mem_write
 
 MEM/WB
 
 - opcode
 - op
 - newcontrol signal for mux
+
+- vsel ???
 
 HDU:
 
