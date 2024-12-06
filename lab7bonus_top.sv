@@ -11,46 +11,48 @@ module lab7bonus_top(KEY, SW, LEDR, HEX0, HEX1, HEX2, HEX3, HEX4, HEX5, CLOCK_50
 
 	wire clk, write, N, V, Z, halt;
 	wire [1:0] mem_cmd;
-	wire [8:0] mem_addr;
-	wire [15:0] din, dout, mem_data;
+	wire [8:0] write_addr, inst_addr, data_addr;
+	wire [15:0] cpu_out, mem_inst, mem_addr, inst, data;
 
-	ram #(16, 8) MEM(clk, mem_addr[7:0], write, din, dout);
-	cpu CPU(clk, reset, mem_data, mem_cmd, mem_addr, din, N, V, Z, halt);
+	ram #(16, 8) MEM(clk, write, write_addr, inst_addr, data_addr, cpu_out, mem_inst, mem_data);
+	cpu CPU(clk, reset, inst, data, mem_cmd, mem_addr, cpu_out, N, V, Z, halt);
 
-	disp U0(din[3:0], HEX0);
-	disp U1(din[7:4], HEX1);
-	disp U2(din[11:8], HEX2);
-	disp U3(din[15:12], HEX3);
+	disp U0(cpu_out[3:0], HEX0);
+	disp U1(cpu_out[7:4], HEX1);
+	disp U2(cpu_out[11:8], HEX2);
+	disp U3(cpu_out[15:12], HEX3);
 	disp U4({1'b0, N, V, Z}, HEX4);
 
 	assign clk = CLOCK_50;
 	assign reset = ~KEY[1];
 	assign LEDR[8] = halt;
 
-	assign mem_data = (mem_cmd == `M_READ & ~mem_addr[8])
-		? dout : {16{1'bz}};
-	assign write = mem_cmd == `M_WRITE & ~mem_addr[8];
+	// assign write = mem_cmd == `M_WRITE & ~mem_addr[8];
+	// assign inst = (mem_cmd == `M_READ & ~mem_addr[8])
+	// 	? mem_inst : {16{1'bz}};
+	// assign data = (mem_cmd == `M_READ & ~mem_addr[8])
+	// 	? mem_data : {16{1'bz}};
 endmodule: lab7bonus_top
 
-module ram(clk, addr, write, din, dout);
+module ram(clk, write, write_addr, inst_addr, data_addr, in, inst_out, data_out);
 	parameter data_width = 32;
 	parameter addr_width = 4;
 	parameter filename = "data.txt";
 
 	input clk;
-	input [addr_width-1:0] addr;
 	input write;
-	input [data_width-1:0] din;
-	output [data_width-1:0] dout;
-	reg [data_width-1:0] dout;
+	input [addr_width-1:0] write_addr, inst_addr, data_addr;
+	input [data_width-1:0] in;
+	output reg [data_width-1:0] inst_out, data_out;
 
 	reg [data_width-1:0] mem [2**addr_width-1:0];
 
 	initial $readmemb(filename, mem);
 
-	always @ (posedge clk) begin
-		if (write) mem[addr] <= din;
-		dout <= mem[addr];
+	always @(negedge clk) begin
+		if (write) mem[write_addr] <= in;
+		inst_out <= mem[inst_addr];
+		data_out <= mem[data_addr];
 	end
 endmodule: ram
 

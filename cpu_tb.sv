@@ -31,7 +31,7 @@ module tb_top(input clk, input reset);
 	wire [8:0] mem_addr;
 	wire [15:0] din, dout, mem_data;
 
-	ram #(16, 8, "data_cpu_tb.txt") MEM(clk, mem_addr[7:0], write, din, dout);
+	ram #(16, 8, "data.txt") MEM(clk, mem_addr[7:0], write, din, dout);
 	cpu CPU(clk, reset, mem_data, mem_cmd, mem_addr, din, N, V, Z);
 
 	assign mem_data = (mem_cmd == `M_READ & ~mem_addr[8])
