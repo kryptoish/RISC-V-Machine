@@ -27,11 +27,6 @@ module lab7bonus_top(KEY, SW, LEDR, HEX0, HEX1, HEX2, HEX3, HEX4, HEX5, CLOCK_50
 	assign reset = ~KEY[1];
 	assign LEDR[8] = halt;
 
-	// assign write = mem_cmd == `M_WRITE & ~mem_addr[8]; //commented
-	// assign inst = (mem_cmd == `M_READ & ~mem_addr[8])
-	// 	? mem_inst : {16{1'bz}};
-	// assign data = (mem_cmd == `M_READ & ~mem_addr[8])
-	// 	? mem_data : {16{1'bz}};
 endmodule: lab7bonus_top
 
 module ram(clk, write, write_addr, inst_addr, data_addr, in, inst_out, data_out);

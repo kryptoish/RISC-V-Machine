@@ -63,7 +63,9 @@ module control(opcode, op, reg_w_sel, reg_a_sel, reg_b_sel, asel, bsel, loads,
 			/* LDR. */
 			5'b011_xx: begin
 				/* Decode. */
-				reg_a_sel = 3'b100; //make bypass for a
+				reg_a_sel = 3'b100;
+				/* Execute. */
+				bsel = 1'b1;
 				/* Writeback. */
 				{reg_w_sel, rf_write, vsel} = 6'b010_1_01;
 			end
@@ -71,9 +73,9 @@ module control(opcode, op, reg_w_sel, reg_a_sel, reg_b_sel, asel, bsel, loads,
 			/* STR. */
 			5'b100_xx: begin
 				/* Decode. */
-				{reg_a_sel, reg_b_sel} = 3'b100_; //idk wot //reg_b gets bypassed
+				{reg_a_sel, reg_b_sel} = 6'b100_010;
 				/* Execute. */
-				{asel, bsel} = 1'b1; //change bsel to 2 bits for sximm5
+				bsel = 1'b1;
 				/* Memory. */
 				mem_write = 1'b1;
 			end
@@ -81,46 +83,38 @@ module control(opcode, op, reg_w_sel, reg_a_sel, reg_b_sel, asel, bsel, loads,
 			/* B, BEQ, BNE, BLT, BLE.*/
 			5'b001_xx: begin
 				/* Decode. */
-				{pc_load, pc_sel} = 3'b1_01;
+				pc_sel = 2'b01;
 			end
 
 			/* BL. */
 			5'b010_11: begin
 				/* Decode. */
-				{pc_load, pc_sel, reg_w_sel, rf_write, vsel} //change write and vsel
-				= 11'b1_11_100_1_1000;
+				pc_sel = 2'b11;
+				/* Writeback. */
+				{reg_w_sel, rf_write, vsel} = 6'b100_1_11;
 			end
 
 			/* BX. */
 			5'b010_00: begin
 				/* Decode. */
-				{reg_b_sel} = 3'b010;
-				/* Execute. */
-				{pc_load, pc_sel} = 3'b1_10;
+				{pc_sel, reg_a_sel} = 5'b10_010;
 			end
 
 			/* BLX. */
 			5'b010_10: begin
 				/* Decode. */
-				{reg_b_sel} = 3'b010;
+				{pc_sel, reg_a_sel} = 5'b10_010;
 				/* Execute. */
 				{pc_load, pc_sel, reg_w_sel, rf_write, vsel}
-				= 11'b1_10_100_1_1000;
+					= 11'b1_10_100_1_11;
 			end
-
-			/* HALT. */
-			5'b111_xx: begin
-				{IF_ID_stall, pc_reset} = 2'b11;
-			end
-
 		endcase
 	end
 endmodule: control
 
-/* Hazard control unit. */ //wiring needs to go down
-module HDU(ID_EX_rd, EX_MEM_rd, MEM_WB_rd, IF_ID_rs, IF_ID_rt, opcode, 
-	write, mem_write, reset, pc_load, stall, forward_a, forward_b);
-
+/* Hazard control unit. */
+module HDU(ID_EX_rd, EX_MEM_rd, MEM_WB_rd, IF_ID_rs, IF_ID_rt, opcode,
+		write, mem_write, reset, pc_load, stall, forward_a, forward_b);
 	input [2:0] ID_EX_rd, EX_MEM_rd, MEM_WB_rd;
     	input [2:0] IF_ID_rs, IF_ID_rt;
 	input [2:0] opcode;
@@ -132,7 +126,7 @@ module HDU(ID_EX_rd, EX_MEM_rd, MEM_WB_rd, IF_ID_rs, IF_ID_rt, opcode,
 		forward_a = 2'b00;
 		forward_b = 2'b00;
 		stall = 1'b0;
-		load_pc = 1'b1; //might need to change
+		load_pc = 1'b1;
 		reset = 1'b0;
 
 		if (opcode == 3'b111) begin
@@ -159,11 +153,10 @@ module HDU(ID_EX_rd, EX_MEM_rd, MEM_WB_rd, IF_ID_rs, IF_ID_rt, opcode,
 		end
 
 		// Load-use hazard detection
-		if (ID_EX_mem_read && 
+		if (ID_EX_mem_read &&
 		((ID_EX_rd == IF_ID_rs) || (ID_EX_rd == IF_ID_rt))) begin
 			stall = 1'b1;
 			pc_load = 1'b0;
 		end
-	end	
-	
+	end
 endmodule: HDU
