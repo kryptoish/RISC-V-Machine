@@ -10,12 +10,12 @@ module lab7bonus_top(KEY, SW, LEDR, HEX0, HEX1, HEX2, HEX3, HEX4, HEX5, CLOCK_50
 	output [9:0] LEDR;
 
 	wire clk, write, N, V, Z, halt;
-	wire [1:0] mem_cmd;
 	wire [8:0] write_addr, inst_addr, data_addr;
-	wire [15:0] cpu_out, mem_inst, mem_addr, inst, data;
+	wire [15:0] cpu_out, mem_inst, mem_addr, inst, data, mem_data;
 
-	ram #(16, 8) MEM(clk, write, write_addr, inst_addr, data_addr, cpu_out, mem_inst, mem_data);
-	cpu CPU(clk, reset, inst, data, mem_cmd, mem_addr, cpu_out, N, V, Z, halt);
+	ram #(16, 8) MEM(clk, write, write_addr[7:0], inst_addr[7:0],
+		data_addr[7:0], cpu_out, mem_inst, mem_data);
+	cpu CPU(clk, reset, mem_inst, data, write, inst_addr, data_addr, cpu_out, N, V, Z, halt);
 
 	disp U0(cpu_out[3:0], HEX0);
 	disp U1(cpu_out[7:4], HEX1);
@@ -32,7 +32,7 @@ endmodule: lab7bonus_top
 module ram(clk, write, write_addr, inst_addr, data_addr, in, inst_out, data_out);
 	parameter data_width = 32;
 	parameter addr_width = 4;
-	parameter filename = "data.txt";
+	parameter filename = "data_lab8_check.txt";
 
 	input clk;
 	input write;

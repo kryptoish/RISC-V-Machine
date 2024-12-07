@@ -1,0 +1,641 @@
+m255
+K4
+z2
+13
+!s112 1.1
+!i10d 8192
+!i10e 25
+!i10f 100
+cModel Technology
+dC:/Users/Wardo/Documents/2025/CPEN211/lab-7-devel
+vALU
+Z0 DXx6 sv_std 3 std 0 22 AD7iAPLo6nTIKk<N0eo=D3
+Z1 !s110 1733551297
+!i10b 1
+!s100 lin]U_RHgmQgB02SKI<bz3
+IE8ZE736FhE^:Zj`f^YSJ:2
+Z2 VDg1SIo80bB@j0V0VzS_@n1
+Z3 !s105 alu_sv_unit
+S1
+Z4 dC:/Users/Wardo/Documents/2025/CPEN211/Simple-Risc-Machine
+Z5 w1733514100
+Z6 8C:/Users/Wardo/Documents/2025/CPEN211/Simple-Risc-Machine/alu.sv
+Z7 FC:/Users/Wardo/Documents/2025/CPEN211/Simple-Risc-Machine/alu.sv
+L0 1
+Z8 OV;L;10.5b;63
+r1
+!s85 0
+31
+Z9 !s108 1733551297.000000
+Z10 !s107 C:/Users/Wardo/Documents/2025/CPEN211/Simple-Risc-Machine/alu.sv|
+Z11 !s90 -reportprogress|300|-work|work|-sv|-stats=none|C:/Users/Wardo/Documents/2025/CPEN211/Simple-Risc-Machine/alu.sv|
+!i113 1
+Z12 o-work work -sv
+Z13 tCvgOpt 0
+n@a@l@u
+vbranchlogic
+R0
+R1
+!i10b 1
+!s100 =CXn4mFGjmh2F7N]z:YRz1
+InCWE=FL:JVEP;Z4addlK:1
+R2
+Z14 !s105 cpu_sv_unit
+S1
+R4
+Z15 w1733551295
+Z16 8C:/Users/Wardo/Documents/2025/CPEN211/Simple-Risc-Machine/cpu.sv
+Z17 FC:/Users/Wardo/Documents/2025/CPEN211/Simple-Risc-Machine/cpu.sv
+L0 205
+R8
+r1
+!s85 0
+31
+R9
+Z18 !s107 C:/Users/Wardo/Documents/2025/CPEN211/Simple-Risc-Machine/cpu.sv|
+Z19 !s90 -reportprogress|300|-work|work|-sv|-stats=none|C:/Users/Wardo/Documents/2025/CPEN211/Simple-Risc-Machine/cpu.sv|
+!i113 1
+R12
+R13
+vcontrol
+R0
+R1
+!i10b 1
+!s100 oZm9Kg=VKP?dO2LlE5bi80
+ILO28bgbdK>=?WJ4K=kO2n3
+R2
+Z20 !s105 control_sv_unit
+S1
+R4
+Z21 w1733551277
+Z22 8C:/Users/Wardo/Documents/2025/CPEN211/Simple-Risc-Machine/control.sv
+Z23 FC:/Users/Wardo/Documents/2025/CPEN211/Simple-Risc-Machine/control.sv
+L0 2
+R8
+r1
+!s85 0
+31
+R9
+Z24 !s107 C:/Users/Wardo/Documents/2025/CPEN211/Simple-Risc-Machine/control.sv|
+Z25 !s90 -reportprogress|300|-work|work|-sv|-stats=none|C:/Users/Wardo/Documents/2025/CPEN211/Simple-Risc-Machine/control.sv|
+!i113 1
+R12
+R13
+vcpu
+R0
+R1
+!i10b 1
+!s100 T5[HLRdhiOgX>;BZ55<o93
+ILUQiMkKVj6o6obNWc;QgV0
+R2
+R14
+S1
+R4
+R15
+R16
+R17
+L0 1
+R8
+r1
+!s85 0
+31
+R9
+R18
+R19
+!i113 1
+R12
+R13
+vcpu_tb
+R0
+R1
+!i10b 1
+!s100 6ka6e7FG=?[[Xmz:W;Q0i3
+IcGncgPBcO7m3607UmBSWY1
+R2
+Z26 !s105 cpu_tb_sv_unit
+S1
+R4
+R5
+Z27 8C:/Users/Wardo/Documents/2025/CPEN211/Simple-Risc-Machine/cpu_tb.sv
+Z28 FC:/Users/Wardo/Documents/2025/CPEN211/Simple-Risc-Machine/cpu_tb.sv
+L0 5
+R8
+r1
+!s85 0
+31
+R9
+Z29 !s107 C:/Users/Wardo/Documents/2025/CPEN211/Simple-Risc-Machine/cpu_tb.sv|
+Z30 !s90 -reportprogress|300|-work|work|-sv|-stats=none|C:/Users/Wardo/Documents/2025/CPEN211/Simple-Risc-Machine/cpu_tb.sv|
+!i113 1
+R12
+R13
+vdatapath
+R0
+Z31 !s110 1733551298
+!i10b 1
+!s100 aF6`4<DW?BIdT9QbHfI1V0
+IQHboIPo^;46l^JOz?LH`e1
+R2
+Z32 !s105 regfile_sv_unit
+S1
+R4
+Z33 w1733540358
+Z34 8C:/Users/Wardo/Documents/2025/CPEN211/Simple-Risc-Machine/regfile.sv
+Z35 FC:/Users/Wardo/Documents/2025/CPEN211/Simple-Risc-Machine/regfile.sv
+L0 48
+R8
+r1
+!s85 0
+31
+Z36 !s108 1733551298.000000
+Z37 !s107 C:/Users/Wardo/Documents/2025/CPEN211/Simple-Risc-Machine/regfile.sv|
+Z38 !s90 -reportprogress|300|-work|work|-sv|-stats=none|C:/Users/Wardo/Documents/2025/CPEN211/Simple-Risc-Machine/regfile.sv|
+!i113 1
+R12
+R13
+vdisp
+R0
+R1
+!i10b 1
+!s100 8gEgTZ3Y48:PIH__:7gMZ1
+I`1:m=a58c70jo=aRR9IS33
+R2
+Z39 !s105 lab7bonus_top_sv_unit
+S1
+R4
+Z40 w1733543036
+Z41 8C:/Users/Wardo/Documents/2025/CPEN211/Simple-Risc-Machine/lab7bonus_top.sv
+Z42 FC:/Users/Wardo/Documents/2025/CPEN211/Simple-Risc-Machine/lab7bonus_top.sv
+L0 54
+R8
+r1
+!s85 0
+31
+R9
+Z43 !s107 C:/Users/Wardo/Documents/2025/CPEN211/Simple-Risc-Machine/lab7bonus_top.sv|
+Z44 !s90 -reportprogress|300|-work|work|-sv|-stats=none|C:/Users/Wardo/Documents/2025/CPEN211/Simple-Risc-Machine/lab7bonus_top.sv|
+!i113 1
+R12
+R13
+vEXEC
+R0
+R1
+!i10b 1
+!s100 1mKfG13i1z:lFW=b[1nNf1
+I5PVlZKK8b:?RPM7de]ZOW1
+R2
+R14
+S1
+R4
+R15
+R16
+R17
+L0 256
+R8
+r1
+!s85 0
+31
+R9
+R18
+R19
+!i113 1
+R12
+R13
+n@e@x@e@c
+vHDU
+R0
+R1
+!i10b 1
+!s100 bgzZV9U8[NK]TbW?`HI3z2
+I<C?afA=iI@PY29A1Y@:2Q3
+R2
+R20
+S1
+R4
+R21
+R22
+R23
+L0 117
+R8
+r1
+!s85 0
+31
+R9
+R24
+R25
+!i113 1
+R12
+R13
+n@h@d@u
+vHDU2
+R0
+!s110 1733547593
+!i10b 1
+!s100 o=VGP=d3YG5]onJ0Va33>1
+I:`G^IZDLRe?WS<N=ZOG@a0
+R2
+R20
+S1
+R4
+w1733547518
+R22
+R23
+L0 180
+R8
+r1
+!s85 0
+31
+!s108 1733547593.000000
+R24
+R25
+!i113 1
+R12
+R13
+n@h@d@u2
+vlab7_check_tb
+R0
+R1
+!i10b 1
+!s100 nRkRb[jYTB8?3;Pkb4cd_2
+I]WPMZ?;fXFo?SgQjV2;C]1
+R2
+!s105 lab7_autograder_check_sv_unit
+S1
+R4
+w1733326606
+8C:/Users/Wardo/Documents/2025/CPEN211/Simple-Risc-Machine/lab7_autograder_check.sv
+FC:/Users/Wardo/Documents/2025/CPEN211/Simple-Risc-Machine/lab7_autograder_check.sv
+L0 1
+R8
+r1
+!s85 0
+31
+R9
+!s107 C:/Users/Wardo/Documents/2025/CPEN211/Simple-Risc-Machine/lab7_autograder_check.sv|
+!s90 -reportprogress|300|-work|work|-sv|-stats=none|C:/Users/Wardo/Documents/2025/CPEN211/Simple-Risc-Machine/lab7_autograder_check.sv|
+!i113 1
+R12
+R13
+vlab7_top
+R0
+!s110 1733345223
+!i10b 1
+!s100 2A@>5jUK2FHDLU3aG_FXi1
+IVMb7RF6jZDOUIOf8b9BfT2
+R2
+!s105 lab7_top_sv_unit
+S1
+R4
+w1733328811
+8C:/Users/Wardo/Documents/2025/CPEN211/Simple-Risc-Machine/lab7_top.sv
+FC:/Users/Wardo/Documents/2025/CPEN211/Simple-Risc-Machine/lab7_top.sv
+L0 5
+R8
+r1
+!s85 0
+31
+!s108 1733345223.000000
+!s107 C:/Users/Wardo/Documents/2025/CPEN211/Simple-Risc-Machine/lab7_top.sv|
+!s90 -reportprogress|300|-work|work|-sv|-stats=none|C:/Users/Wardo/Documents/2025/CPEN211/Simple-Risc-Machine/lab7_top.sv|
+!i113 1
+R12
+R13
+vlab7bonus_check_tb
+R0
+R1
+!i10b 1
+!s100 lR9?WSLT>S0BUBn`[D0mP0
+IJR=KhIKbI@SU6n9=Ke<jY2
+R2
+!s105 lab7bonus_autograder_check_sv_unit
+S1
+R4
+w1733543155
+8C:/Users/Wardo/Documents/2025/CPEN211/Simple-Risc-Machine/lab7bonus_autograder_check.sv
+FC:/Users/Wardo/Documents/2025/CPEN211/Simple-Risc-Machine/lab7bonus_autograder_check.sv
+L0 1
+R8
+r1
+!s85 0
+31
+R9
+!s107 C:/Users/Wardo/Documents/2025/CPEN211/Simple-Risc-Machine/lab7bonus_autograder_check.sv|
+!s90 -reportprogress|300|-work|work|-sv|-stats=none|C:/Users/Wardo/Documents/2025/CPEN211/Simple-Risc-Machine/lab7bonus_autograder_check.sv|
+!i113 1
+R12
+R13
+vlab7bonus_stage2_tb
+!s110 1733539753
+!i10b 1
+!s100 4fZPURS[OaD=mJ1i[>8Fh0
+IbCL`O7U;XjOlaio[hSiFU3
+R2
+!s105 lab7bonus_stage2_tb_sv_unit
+S1
+R4
+w1733502472
+8C:/Users/Wardo/Documents/2025/CPEN211/Simple-Risc-Machine/lab7bonus_stage2_tb.sv
+FC:/Users/Wardo/Documents/2025/CPEN211/Simple-Risc-Machine/lab7bonus_stage2_tb.sv
+L0 9
+R8
+r1
+!s85 0
+31
+!s108 1733539753.000000
+!s107 C:/Users/Wardo/Documents/2025/CPEN211/Simple-Risc-Machine/lab7bonus_stage2_tb.sv|
+!s90 -reportprogress|300|-work|work|-vlog01compat|-stats=none|C:/Users/Wardo/Documents/2025/CPEN211/Simple-Risc-Machine/lab7bonus_stage2_tb.sv|
+!i113 1
+o-work work -vlog01compat
+R13
+vlab7bonus_tb
+R0
+R1
+!i10b 1
+!s100 h;hY?4TJ0b91^k]HShO@70
+I1T64BM0^Z2GhH7XFddSbG1
+R2
+!s105 lab7bonus_tb_sv_unit
+S1
+R4
+w1733415252
+8C:/Users/Wardo/Documents/2025/CPEN211/Simple-Risc-Machine/lab7bonus_tb.sv
+FC:/Users/Wardo/Documents/2025/CPEN211/Simple-Risc-Machine/lab7bonus_tb.sv
+L0 9
+R8
+r1
+!s85 0
+31
+R9
+!s107 C:/Users/Wardo/Documents/2025/CPEN211/Simple-Risc-Machine/lab7bonus_tb.sv|
+!s90 -reportprogress|300|-work|work|-sv|-stats=none|C:/Users/Wardo/Documents/2025/CPEN211/Simple-Risc-Machine/lab7bonus_tb.sv|
+!i113 1
+R12
+R13
+vlab7bonus_top
+R0
+R1
+!i10b 1
+!s100 >1TLgS=T?cDB[;z5]iJMB0
+I[f`e>jB^2CCS>Nl=C08PA0
+R2
+R39
+S1
+R4
+R40
+R41
+R42
+L0 5
+R8
+r1
+!s85 0
+31
+R9
+R43
+R44
+!i113 1
+R12
+R13
+vPR_EX_MEM
+R0
+R1
+!i10b 1
+!s100 46ONigfQS<J0UEGLY`RjR2
+ISA=:5_Uk8@@fX^eklo^>W2
+R2
+R14
+S1
+R4
+R15
+R16
+R17
+L0 363
+R8
+r1
+!s85 0
+31
+R9
+R18
+R19
+!i113 1
+R12
+R13
+n@p@r_@e@x_@m@e@m
+vPR_ID_EX
+R0
+R1
+!i10b 1
+!s100 3RN^ndI>^V^5=eGEOdi_b1
+IJ`cNlB1_iTG77iBVLHIez3
+R2
+R14
+S1
+R4
+R15
+R16
+R17
+L0 336
+R8
+r1
+!s85 0
+31
+R9
+R18
+R19
+!i113 1
+R12
+R13
+n@p@r_@i@d_@e@x
+vPR_IF_ID
+R0
+R1
+!i10b 1
+!s100 jY>l@Z^7MH0;^Z7T4BFH60
+IU=jXaf6eR3ejJ<_<Q_4eY0
+R2
+R14
+S1
+R4
+R15
+R16
+R17
+L0 324
+R8
+r1
+!s85 0
+31
+R9
+R18
+R19
+!i113 1
+R12
+R13
+n@p@r_@i@f_@i@d
+vPR_MEM_WB
+R0
+R1
+!i10b 1
+!s100 UE20z1=m5jjlj0Q;X>QjH2
+I;B80O^Cb014LeYMbUz6Oi3
+R2
+R14
+S1
+R4
+R15
+R16
+R17
+L0 380
+R8
+r1
+!s85 0
+31
+R9
+R18
+R19
+!i113 1
+R12
+R13
+n@p@r_@m@e@m_@w@b
+vram
+R0
+R1
+!i10b 1
+!s100 Xl]T8JP`cU_:PYf9W80TK2
+IJ8R630I^E_A36Ljmn6Fin1
+R2
+R39
+S1
+R4
+R40
+R41
+R42
+L0 32
+R8
+r1
+!s85 0
+31
+R9
+R43
+R44
+!i113 1
+R12
+R13
+vregfile
+R0
+R31
+!i10b 1
+!s100 BDd8M8F8WNnKl6HbLBcOj2
+I0X`6:@MM]9Sz[]ShH5Cn13
+R2
+R32
+S1
+R4
+R33
+R34
+R35
+L0 1
+R8
+r1
+!s85 0
+31
+R36
+R37
+R38
+!i113 1
+R12
+R13
+vregister
+R0
+R1
+!i10b 1
+!s100 ITWfPR6B2HMddgNTS`Gbl3
+I;77f5B2c2bGGIC_aUkGTY3
+R2
+R14
+S1
+R4
+R15
+R16
+R17
+L0 194
+R8
+r1
+!s85 0
+31
+R9
+R18
+R19
+!i113 1
+R12
+R13
+vshifter
+R0
+R1
+!i10b 1
+!s100 7`D8>ofDYl5lPh<chd]ob1
+IB_=@:8^icVQ0GmVFOjTZ33
+R2
+R3
+S1
+R4
+R5
+R6
+R7
+L0 19
+R8
+r1
+!s85 0
+31
+R9
+R10
+R11
+!i113 1
+R12
+R13
+vstatemachine
+R0
+R1
+!i10b 1
+!s100 chd<V9[^ef[f:?MW6nD111
+ICoeOzEfg;IdJUEaOoY5^M1
+R2
+!s105 statemachine_sv_unit
+S1
+R4
+w1733430568
+8C:/Users/Wardo/Documents/2025/CPEN211/Simple-Risc-Machine/statemachine.sv
+FC:/Users/Wardo/Documents/2025/CPEN211/Simple-Risc-Machine/statemachine.sv
+L0 9
+R8
+r1
+!s85 0
+31
+R9
+!s107 C:/Users/Wardo/Documents/2025/CPEN211/Simple-Risc-Machine/statemachine.sv|
+!s90 -reportprogress|300|-work|work|-sv|-stats=none|C:/Users/Wardo/Documents/2025/CPEN211/Simple-Risc-Machine/statemachine.sv|
+!i113 1
+R12
+R13
+vtb_top
+R0
+R1
+!i10b 1
+!s100 _hml_]k^YBBVoh9MeNO9W3
+IOOh`]>^4<BRV1eg1V9TFT0
+R2
+R26
+S1
+R4
+R5
+R27
+R28
+L0 28
+R8
+r1
+!s85 0
+31
+R9
+R29
+R30
+!i113 1
+R12
+R13

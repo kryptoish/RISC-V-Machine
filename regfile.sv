@@ -44,3 +44,12 @@ module regfile(clk, data_in, write, reg_w, reg_a, reg_b, out_a, out_b);
 		if (load[7]) R7 <= data_in;
 	end
 endmodule: regfile
+
+module datapath(clk, data_in, write, reg_w, reg_a, reg_b, out_a, out_b);
+	input clk, write;
+	input [2:0] reg_w, reg_a, reg_b;
+	input [15:0] data_in;
+	output reg [15:0] out_a, out_b;
+
+	regfile REGFILE(clk, data_in, write, reg_w, reg_a, reg_b, out_a, out_b);
+endmodule: datapath

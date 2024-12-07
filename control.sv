@@ -1,15 +1,16 @@
 /* Control signals. */
 module control(opcode, op, pc_sel, reg_w_sel, reg_a_sel, reg_b_sel, asel, bsel, loads,
-		mem_write, vsel, rf_write);
+		mem_write, vsel, rf_write, halt);
 	input [1:0] op;
 	input [2:0] opcode;
-	output reg asel, bsel, loads, mem_write, rf_write;
+	output reg asel, bsel, loads, mem_write, rf_write, halt;
 	output reg [1:0] pc_sel, vsel;
 	output reg [2:0] reg_w_sel, reg_a_sel, reg_b_sel;
+	// CHANGE HALT!!!!!!!!!!!!!!!!!!!
 
 	always_comb begin
-		{reg_w_sel, reg_a_sel, reg_b_sel, asel, bsel, loads, mem_write,
-			vsel, rf_write} = 16'b0;
+		{pc_sel, reg_w_sel, reg_a_sel, reg_b_sel, asel, bsel, loads, mem_write,
+			vsel, rf_write, halt} = 19'b0;
 
 		casex ({opcode, op})
 			/* MOV immediate to register. */
@@ -153,7 +154,7 @@ module HDU(ID_EX_rd, EX_MEM_rd, MEM_WB_rd, IF_ID_rs, IF_ID_rt, opcode,
 		end
 
 		// Load-use hazard detection
-		if ((ID_EX_rd == IF_ID_rs) || (ID_EX_rd == IF_ID_rt)) begin
+		if((ID_EX_rd != 3'bxxx) || ((EX_MEM_rd == IF_ID_rs) || (EX_MEM_rd == IF_ID_rt) || (MEM_WB_rd == IF_ID_rs) || (MEM_WB_rd == IF_ID_rt))) begin
 			stall = 1'b1;
 			pc_load = 1'b0;
 		end

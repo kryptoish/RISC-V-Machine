@@ -14,7 +14,7 @@ module lab7bonus_check_tb;
 	end
 
 	initial begin
-		#2000;
+		#200;
 		$stop;
 	end
 

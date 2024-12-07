@@ -1,16 +1,15 @@
-// NEED TO CHANGE TO
-//	cpu CPU(clk, reset, inst, data, mem_cmd, mem_addr, cpu_out, N, V, Z, halt);
-
-module cpu(clk, reset, mem_data, mem_cmd, mem_addr, out, N, V, Z, halt);
+module cpu(clk, reset, inst_next, mem_data_out, mem_write, inst_addr, data_addr,
+		mem_data_in, N, V, Z, halt);
 	input clk, reset;
-	input [15:0] mem_data;
-	output N, V, Z, halt;
-	output [1:0] mem_cmd;
-	output [15:0] out;
-	output reg [8:0] mem_addr;
+	input [15:0] inst_next, mem_data_out;
+	output mem_write, N, V, Z, halt;
+	output [15:0] mem_data_in;
+	output reg [8:0] inst_addr, data_addr;
 
 	wire stall, pc_reset;
-	wire [1:0] pc_sel, fwd_a, fwd_b;
+	wire [1:0] pc_sel, fwd_sel_a, fwd_sel_b;
+	wire [15:0] fwd_mem_ex, fwd_wb_ex;
+	reg [2:0] Rn_next, Rm_next;
 
 	/*
 	 * Pipeline signals.
@@ -60,7 +59,7 @@ module cpu(clk, reset, mem_data, mem_cmd, mem_addr, out, N, V, Z, halt);
 	wire [1:0] MEM_vsel;
 	wire [2:0] MEM_reg_w;
 	wire [7:0] MEM_imm8;
-	wire [15:0] MEM_alu_out, mem_data_in, mem_data_out;
+	wire [15:0] MEM_alu_out, mem_data_in, mem_data_out, MEM_c;
 
 	/* Writeback. */
 	wire rf_write, halt;
@@ -75,6 +74,7 @@ module cpu(clk, reset, mem_data, mem_cmd, mem_addr, out, N, V, Z, halt);
 
 	/* Instruction fetch. */
 
+	assign pc_reset = reset;
 	assign inst_addr = PC;
 
 	PR_IF_ID PR0(clk, stall, inst_next, inst);
@@ -83,7 +83,7 @@ module cpu(clk, reset, mem_data, mem_cmd, mem_addr, out, N, V, Z, halt);
 
 	/* Branching logic. */
 	branchlogic BL(pc_reset, pc_sel, opcode, cond, PC, N, V, Z,
-		reg_a, ID_imm8, pc_next);
+		ID_a, ID_imm8, pc_next);
 
 	/* Decoder. */
 	assign {opcode, op, Rn, Rd, ID_sh, Rm} = inst;
@@ -115,19 +115,19 @@ module cpu(clk, reset, mem_data, mem_cmd, mem_addr, out, N, V, Z, halt);
 		endcase
 	end
 
-	regfile REGFILE(clk, rf_in, rf_write, reg_w, reg_a, reg_b, ID_a, ID_b);
+	datapath DP(clk, rf_in, rf_write, reg_w, reg_a, reg_b, ID_a, ID_b);
 
 	control CTL(opcode, op, pc_sel, reg_w_sel, reg_a_sel, reg_b_sel, ID_asel,
 		ID_bsel, ID_loads, ID_mem_write, ID_vsel, ID_rf_write, ID_halt);
 
-	PR_ID_EX PR1(clk, {op, ID_sh, ID_imm5, ID_asel, ID_bsel, ID_loads},
+	PR_ID_EX PR1(clk, stall, {op, ID_sh, ID_imm5, ID_asel, ID_bsel, ID_loads},
 		{ID_mem_write}, {ID_imm8, ID_reg_w, ID_vsel, ID_rf_write, ID_halt},
 		ID_a, ID_b, {alu_op, sh, imm5, asel, bsel, loads},
 		{EX_mem_write}, {EX_imm8, EX_reg_w, EX_vsel, EX_rf_write, EX_halt},
 		ain, bin);
 
 	/* Combinational logic for execute stage. */
-	EXEC EX(alu_op, asel, bsel, imm5, ain, bin, fwd_sel_a, fwd_sel_b,
+	EXEC EX(alu_op, sh, asel, bsel, imm5, ain, bin, fwd_sel_a, fwd_sel_b,
 		fwd_mem_ex, fwd_wb_ex, status, alu_out, c);
 
 	/* Status register (negedge clk). */
@@ -146,7 +146,7 @@ module cpu(clk, reset, mem_data, mem_cmd, mem_addr, out, N, V, Z, halt);
 		out, mdata);
 
 	/* Hazard detection unit. */
-	HDU HDU(ID_reg_w, EX_reg_w, MEM_reg_w, Rn, Rm, opcode,
+	HDU HDU(ID_reg_w, EX_reg_w, MEM_reg_w, Rn_next, Rm_next, opcode,
 		rf_write, mem_write, ctrl_reset, pc_load, stall, fwd_sel_a, fwd_sel_b);
 
 	/* Multiplexer for REGFILE input. */
@@ -156,6 +156,11 @@ module cpu(clk, reset, mem_data, mem_cmd, mem_addr, out, N, V, Z, halt);
 		2'b10: rf_in = {{8{imm8[7]}}, imm8};
 		2'b11: rf_in = {7'b0, PC};
 	endcase
+
+	always_ff @(posedge clk) begin
+		Rn_next <= Rn;
+		Rm_next <= Rm;
+	end
 endmodule: cpu
 
 /* General n-bit storage registers. */
@@ -222,10 +227,10 @@ endmodule: branchlogic
 
 /* EX. */
 
-module EXEC(op, asel, bsel, imm5, ain, bin, fwd_sel_a, fwd_sel_b,
+module EXEC(op, sh, asel, bsel, imm5, ain, bin, fwd_sel_a, fwd_sel_b,
 		fwd_mem_ex, fwd_wb_ex, status, out, c);
 	input asel, bsel;
-	input [1:0] op, fwd_sel_a, fwd_sel_b;
+	input [1:0] op, sh, fwd_sel_a, fwd_sel_b;
 	input [4:0] imm5;
 	input [15:0] ain, bin, fwd_mem_ex, fwd_wb_ex;
 	output [2:0] status;
@@ -235,7 +240,7 @@ module EXEC(op, asel, bsel, imm5, ain, bin, fwd_sel_a, fwd_sel_b,
 	wire [15:0] sout;
 	reg [15:0] aout, bout;
 
-	shifter U0(bout, shift, sout);
+	shifter U0(bout, sh, sout);
 	ALU U1(aout, bout, op, out, status);
 
 	/* ALU bypass. */
@@ -295,14 +300,16 @@ module PR_IF_ID(clk, stall, in, out);
 	input [15:0] in;
 	output reg [15:0] out;
 
-	always @(posedge clk)
+	always @(posedge clk) begin
+		out[15:13] <= 3'b0;
 		if (~stall)
 			out <= in;
+	end
 endmodule: PR_IF_ID
 
-module PR_ID_EX(clk, ctl_ex_in, ctl_mem_in, ctl_wb_in, a_in, b_in,
+module PR_ID_EX(clk, stall, ctl_ex_in, ctl_mem_in, ctl_wb_in, a_in, b_in,
 		ctl_ex_out, ctl_mem_out, ctl_wb_out, a_out, b_out);
-	input clk, ctl_mem_in;
+	input clk, stall, ctl_mem_in;
 	input [11:0] ctl_ex_in;
 	input [14:0] ctl_wb_in;
 	input [15:0] a_in, b_in;
@@ -311,7 +318,14 @@ module PR_ID_EX(clk, ctl_ex_in, ctl_mem_in, ctl_wb_in, a_in, b_in,
 	output reg [14:0] ctl_wb_out;
 	output reg [15:0] a_out, b_out;
 
-	always @(posedge clk) begin
+	always @(posedge clk)
+	if (stall) begin
+		ctl_ex_out <= 12'b0;
+		ctl_mem_out <= 1'b0;
+		ctl_wb_out <= 15'b0;
+		a_out <= 16'b0;
+		b_out <= 16'b0;
+	end else begin
 		ctl_ex_out <= ctl_ex_in;
 		ctl_mem_out <= ctl_mem_in;
 		ctl_wb_out <= ctl_wb_in;
