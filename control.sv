@@ -1,10 +1,10 @@
 /* Control signals. */
-module control(opcode, op, reg_w_sel, reg_a_sel, reg_b_sel, asel, bsel, loads,
+module control(opcode, op, pc_sel, reg_w_sel, reg_a_sel, reg_b_sel, asel, bsel, loads,
 		mem_write, vsel, rf_write);
 	input [1:0] op;
 	input [2:0] opcode;
 	output reg asel, bsel, loads, mem_write, rf_write;
-	output reg [1:0] vsel;
+	output reg [1:0] pc_sel, vsel;
 	output reg [2:0] reg_w_sel, reg_a_sel, reg_b_sel;
 
 	always_comb begin
@@ -105,8 +105,8 @@ module control(opcode, op, reg_w_sel, reg_a_sel, reg_b_sel, asel, bsel, loads,
 				/* Decode. */
 				{pc_sel, reg_a_sel} = 5'b10_010;
 				/* Execute. */
-				{pc_load, pc_sel, reg_w_sel, rf_write, vsel}
-					= 11'b1_10_100_1_11;
+				{reg_w_sel, rf_write, vsel}
+					= 6'b100_1_11;
 			end
 		endcase
 	end
@@ -126,12 +126,12 @@ module HDU(ID_EX_rd, EX_MEM_rd, MEM_WB_rd, IF_ID_rs, IF_ID_rt, opcode,
 		forward_a = 2'b00;
 		forward_b = 2'b00;
 		stall = 1'b0;
-		load_pc = 1'b1;
+		pc_load = 1'b1;
 		reset = 1'b0;
 
 		if (opcode == 3'b111) begin
 			stall = 1'b1;
-			load_pc = 1'b0;
+			pc_load = 1'b0;
 			reset = 1'b1;
 		end
 
@@ -153,8 +153,7 @@ module HDU(ID_EX_rd, EX_MEM_rd, MEM_WB_rd, IF_ID_rs, IF_ID_rt, opcode,
 		end
 
 		// Load-use hazard detection
-		if (ID_EX_mem_read &&
-		((ID_EX_rd == IF_ID_rs) || (ID_EX_rd == IF_ID_rt))) begin
+		if ((ID_EX_rd == IF_ID_rs) || (ID_EX_rd == IF_ID_rt)) begin
 			stall = 1'b1;
 			pc_load = 1'b0;
 		end

@@ -9,8 +9,8 @@ module cpu(clk, reset, mem_data, mem_cmd, mem_addr, out, N, V, Z, halt);
 	output [15:0] out;
 	output reg [8:0] mem_addr;
 
-	wire stall;
-	wire [1:0] fwd_a, fwd_b;
+	wire stall, pc_reset;
+	wire [1:0] pc_sel, fwd_a, fwd_b;
 
 	/*
 	 * Pipeline signals.
@@ -38,7 +38,6 @@ module cpu(clk, reset, mem_data, mem_cmd, mem_addr, out, N, V, Z, halt);
 	wire [8:0] PC, pc_next;
 
 	/* Instruction decode. */
-	// PC RESET, PC SELECT.
 	wire ID_asel, ID_bsel, ID_loads, ID_mem_write, ID_rf_write, ID_halt;
 	wire [1:0] op, ID_sh, ID_vsel;
 	wire [2:0] opcode, cond, Rn, Rd, Rm, reg_w_sel, reg_a_sel,
@@ -118,7 +117,7 @@ module cpu(clk, reset, mem_data, mem_cmd, mem_addr, out, N, V, Z, halt);
 
 	regfile REGFILE(clk, rf_in, rf_write, reg_w, reg_a, reg_b, ID_a, ID_b);
 
-	control CTL(opcode, op, reg_w_sel, reg_a_sel, reg_b_sel, ID_asel,
+	control CTL(opcode, op, pc_sel, reg_w_sel, reg_a_sel, reg_b_sel, ID_asel,
 		ID_bsel, ID_loads, ID_mem_write, ID_vsel, ID_rf_write, ID_halt);
 
 	PR_ID_EX PR1(clk, {op, ID_sh, ID_imm5, ID_asel, ID_bsel, ID_loads},
