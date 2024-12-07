@@ -1,19 +1,21 @@
 /* Control signals. */
-module control(opcode, op, write, reg_w_sel, reg_a_sel, reg_b_sel, asel, bsel, vsel, loads);
+module control(opcode, op, reg_w_sel, reg_a_sel, reg_b_sel, asel, bsel, loads,
+		mem_write, vsel, rf_write);
 	input [1:0] op;
 	input [2:0] opcode;
-	output write, asel, bsel, vsel, loads;
-	output [2:0] reg_w_sel, reg_a_sel, reg_b_sel;
+	output reg asel, bsel, loads, mem_write, rf_write;
+	output reg [1:0] vsel;
+	output reg [2:0] reg_w_sel, reg_a_sel, reg_b_sel;
 
 	always_comb begin
-		{write, reg_w_sel, reg_a_sel, reg_b_sel, asel, bsel, vsel, loads}
-			= 14'b0_000_000_000_0000;
+		{reg_w_sel, reg_a_sel, reg_b_sel, asel, bsel, loads, mem_write,
+			vsel, rf_write} = 16'b0;
 
 		casex ({opcode, op})
 			/* MOV immediate to register. */
 			5'b110_10: begin
 				/* Writeback. */
-				{reg_w_sel, write, vsel} = 6'b100_1_10;
+				{reg_w_sel, rf_write, vsel} = 6'b100_1_10;
 			end
 
 			/* MOV register to register. */
@@ -23,7 +25,7 @@ module control(opcode, op, write, reg_w_sel, reg_a_sel, reg_b_sel, asel, bsel, v
 				/* Execute. */
 				asel = 1'b1;
 				/* Writeback. */
-				{reg_w_sel, write} = 4'b010_1;
+				{reg_w_sel, rf_write} = 4'b010_1;
 			end
 
 			/* ADD. */
@@ -31,7 +33,7 @@ module control(opcode, op, write, reg_w_sel, reg_a_sel, reg_b_sel, asel, bsel, v
 				/* Decode. */
 				{reg_a_sel, reg_b_sel} = 6'b100_001;
 				/* Execute. */
-				{reg_w_sel, write} = 4'b010_1;
+				{reg_w_sel, rf_write} = 4'b010_1;
 			end
 
 			/* CMP. */
@@ -47,7 +49,7 @@ module control(opcode, op, write, reg_w_sel, reg_a_sel, reg_b_sel, asel, bsel, v
 				/* Decode. */
 				{reg_a_sel, reg_b_sel} = 6'b100_001;
 				/* Writeback. */
-				{reg_w_sel, write} = 4'b010_1;
+				{reg_w_sel, rf_write} = 4'b010_1;
 			end
 
 			/* MVN. */
@@ -55,7 +57,7 @@ module control(opcode, op, write, reg_w_sel, reg_a_sel, reg_b_sel, asel, bsel, v
 				/* Decode. */
 				reg_b_sel = 3'b001;
 				/* Writeback. */
-				{reg_w_sel, write} = 4'b010_1;
+				{reg_w_sel, rf_write} = 4'b010_1;
 			end
 
 			/* LDR. */
@@ -63,7 +65,7 @@ module control(opcode, op, write, reg_w_sel, reg_a_sel, reg_b_sel, asel, bsel, v
 				/* Decode. */
 				reg_a_sel = 3'b100; //make bypass for a
 				/* Writeback. */
-				{reg_w_sel, write, vsel} = 6'b010_1_01;
+				{reg_w_sel, rf_write, vsel} = 6'b010_1_01;
 			end
 
 			/* STR. */
@@ -85,7 +87,7 @@ module control(opcode, op, write, reg_w_sel, reg_a_sel, reg_b_sel, asel, bsel, v
 			/* BL. */
 			5'b010_11: begin
 				/* Decode. */
-				{pc_load, pc_sel, reg_w_sel, write, vsel} //change write and vsel
+				{pc_load, pc_sel, reg_w_sel, rf_write, vsel} //change write and vsel
 				= 11'b1_11_100_1_1000;
 			end
 
@@ -102,7 +104,7 @@ module control(opcode, op, write, reg_w_sel, reg_a_sel, reg_b_sel, asel, bsel, v
 				/* Decode. */
 				{reg_b_sel} = 3'b010;
 				/* Execute. */
-				{pc_load, pc_sel, reg_w_sel, write, vsel}
+				{pc_load, pc_sel, reg_w_sel, rf_write, vsel}
 				= 11'b1_10_100_1_1000;
 			end
 

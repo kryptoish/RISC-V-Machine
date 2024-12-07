@@ -34,34 +34,43 @@ module cpu(clk, reset, mem_data, mem_cmd, mem_addr, out, N, V, Z, halt);
 	 */
 
 	/* Instruction fetch. */
-	// PC, etc...
+	wire [8:0] PC, pc_next;
 
 	/* Instruction decode. */
-	wire ID_write, ID_asel, ID_bsel, ID_loads, ID_mem_write;
+	// PC RESET, PC SELECT.
+	wire ID_asel, ID_bsel, ID_loads, ID_mem_write, IF_rf_write;
 	wire [1:0] op, ID_sh, ID_vsel;
-	wire [2:0] opcode, cond, Rn, Rd, Rm, reg_a, reg_b, reg_w_sel, reg_a_sel, reg_b_sel, ID_reg_w;
+	wire [2:0] opcode, cond, Rn, Rd, Rm, reg_w_sel, reg_a_sel,
+		reg_b_sel;
 	wire [4:0] ID_imm5;
 	wire [7:0] ID_imm8;
 	wire [15:0] inst, ID_a, ID_b;
+	reg [2:0] reg_a, reg_b, ID_reg_w;
 
 	/* Execute. */
-	wire asel, bsel, loads, EX_mem_write, EX_write;
+	wire asel, bsel, loads, EX_mem_write, EX_rf_write;
 	wire [1:0] alu_op, sh, EX_vsel;
 	wire [2:0] status, EX_reg_w;
 	wire [4:0] imm5;
 	wire [7:0] EX_imm8;
-	wire [15:0] ain, bin, cin, alu_out, c;
+	wire [15:0] ain, bin, alu_out, c;
 
-	// /* Memory. */
-	// wire mem_write;
-	// wire [15:0] mem_data_in, mem_data_out;
+	/* Memory. */
+	wire mem_write, MEM_rf_write;
+	wire [1:0] MEM_vsel;
+	wire [2:0] MEM_reg_w;
+	wire [7:0] MEM_imm8;
+	wire [15:0] MEM_alu_out, mem_data_in, mem_data_out;
 
-	// /* Writeback. */
-	// wire write;
-	// wire [1:0] vsel;
-	// wire [15:0] out, mdata;
+	/* Writeback. */
+	wire rf_write;
+	wire [1:0] vsel;
+	wire [2:0] reg_w;
+	wire [7:0] imm8;
+	wire [15:0] out, mdata;
+	reg [15:0] rf_in;
 
-	register #(9) U0(clk, pc_load, pc_next, PC);
+	register #(9) U0(~clk, pc_load, pc_next, PC);
 
 	/* Instruction fetch. */
 
@@ -70,6 +79,11 @@ module cpu(clk, reset, mem_data, mem_cmd, mem_addr, out, N, V, Z, halt);
 	PR_IF_ID PR0(clk, stall, inst_next, inst);
 
 	/* Instruction decode. */
+
+	/* Branching logic. */
+	// TODO: Update control unit.
+	branchlogic BL(pc_reset, pc_sel, opcode, cond, PC, N, V, Z,
+		reg_a, ID_imm8, pc_next);
 
 	/* Decoder. */
 	assign {opcode, op, Rn, Rd, ID_sh, Rm} = inst;
@@ -101,44 +115,71 @@ module cpu(clk, reset, mem_data, mem_cmd, mem_addr, out, N, V, Z, halt);
 		endcase
 	end
 
-	regfile REGFILE(clk, rf_in, write, reg_w, reg_a, reg_b, ID_a, ID_b);
+	regfile REGFILE(clk, rf_in, rf_write, reg_w, reg_a, reg_b, ID_a, ID_b);
 
-	control CTL(opcode, op, ID_write, reg_w_sel, reg_a_sel, reg_b_sel, ID_asel, ID_bsel, ID_vsel, ID_loads);
+	control CTL(opcode, op, reg_w_sel, reg_a_sel, reg_b_sel, ID_asel,
+		ID_bsel, ID_loads, ID_mem_write, ID_vsel, ID_rf_write);
 
-	PR_ID_EX PR1(clk, {op, ID_sh, ID_imm5, ID_asel, ID_bsel, ID_loads}, {ID_mem_write},
-		{ID_imm8, ID_write, ID_reg_w, ID_vsel}, ID_a, ID_b, {alu_op, sh, imm5, asel, bsel, loads},
-		{EX_mem_write}, {EX_imm8, EX_write, EX_reg_w, EX_vsel}, ain, bin);
+	PR_ID_EX PR1(clk, {op, ID_sh, ID_imm5, ID_asel, ID_bsel, ID_loads},
+		{ID_mem_write}, {ID_imm8, ID_reg_w, ID_vsel, ID_rf_write},
+		ID_a, ID_b, {alu_op, sh, imm5, asel, bsel, loads},
+		{EX_mem_write}, {EX_imm8, EX_reg_w, EX_vsel, EX_rf_write},
+		ain, bin);
 
 	/* Combinational logic for execute stage. */
 	EXEC EX(alu_op, asel, bsel, imm5, ain, bin, fwd_mem_ex, fwd_wb_ex,
 		status, alu_out, c);
 
 	/* Status register. */
-	register #(3) SR(clk, loads, status, {N, V, Z});
+	register #(3) SR(~clk, loads, status, {N, V, Z});
 
-	PR_EX_MEM PR2(clk, {EX_mem_write}, {EX_write, EX_reg_w, EX_vsel},
-		alu_out, c, {mem_write}, {MEM_write, MEM_reg_w, MEM_vsel},
-		MEM_alu_out, MEM_c);
+	PR_EX_MEM PR2(clk, {EX_mem_write}, {EX_imm8, EX_reg_w, EX_vsel,
+		EX_rf_write}, alu_out, c, {mem_write}, {MEM_imm8, MEM_reg_w,
+		MEM_vsel, MEM_rf_write}, MEM_alu_out, MEM_c);
 
+	/* RAM module inputs. */
 	assign data_addr = MEM_alu_out;
 	assign mem_data_in = MEM_c;
 
-	PR_MEM_WB PR3(clk, {MEM_write, MEM_reg_w, MEM_vsel}, MEM_alu_out,
-		mem_data_out, {write, reg_w, vsel}, output, mdata);
+	PR_MEM_WB PR3(clk, {MEM_imm8, MEM_reg_w, MEM_vsel, MEM_rf_write},
+		MEM_alu_out, mem_data_out, {imm8, reg_w, vsel, rf_write},
+		out, mdata);
 
 	/* Multiplexer for REGFILE input. */
 	always_comb case (vsel)
-		2'b00: rf_in = output;
+		2'b00: rf_in = out;
 		2'b01: rf_in = mdata;
-		2'b10: rf_in = sximm8;
+		2'b10: rf_in = {{8{imm8[7]}}, imm8};
 		2'b11: rf_in = {7'b0, PC};
 	endcase
+endmodule: cpu
 
-	// datapath DP(clk, reg_w, reg_a, reg_b, write, loada, loadb, loadc, loads,
-	// 	loadm, op, sh, asel, bsel, csel, vsel, sximm5, sximm8,
-	// 	mem_data, PC, N, V, Z, out, data_address);
+/* General n-bit storage registers. */
 
-	/* Branching logic. */
+module register(clk, load, in, out);
+	parameter n = 1;
+	input clk, load;
+	input [n-1:0] in;
+	output reg [n-1:0] out;
+
+	always_ff @(posedge clk)
+		if (load) out <= in;
+endmodule: register
+
+/* Branching logic. */
+module branchlogic(pc_reset, pc_sel, opcode, cond, PC, N, V, Z,
+		out, imm8, pc_next);
+	input pc_reset, N, V, Z;
+	input [1:0] pc_sel;
+	input [2:0] opcode, cond;
+	input [7:0] imm8;
+	input [8:0] PC;
+	input [15:0] out;
+	output reg [8:0] pc_next;
+
+	wire [8:0] sximm8;
+
+	assign sximm8 = {imm8[7], imm8};
 	always_comb casex ({pc_reset, pc_sel})
 		3'b1_xx:
 			pc_next = 9'b0;
@@ -169,21 +210,10 @@ module cpu(clk, reset, mem_data, mem_cmd, mem_addr, out, N, V, Z, halt);
 		3'b0_11:
 			pc_next = PC + sximm8[8:0];
 		/* Next address in memory. */
-		default: pc_next = PC + 1;
+		default:
+			pc_next = PC + 1;
 	endcase
-endmodule: cpu
-
-/* General n-bit storage registers. */
-
-module register(clk, load, in, out);
-	parameter n = 1;
-	input clk, load;
-	input [n-1:0] in;
-	output reg [n-1:0] out;
-
-	always_ff @(posedge clk)
-		if (load) out <= in;
-endmodule: register
+endmodule: branchlogic
 
 /* EX. */
 
@@ -195,7 +225,8 @@ module EXEC(op, asel, bsel, imm5, ain, bin, fwd_mem_ex, fwd_wb_ex, status, out, 
 	output [15:0] out, c;
 
 	wire [2:0] status;
-	wire [15:0] aout, bout, sout;
+	wire [15:0] sout;
+	reg [15:0] aout, bout;
 
 	shifter U0(bout, shift, sout);
 	ALU U1(aout, bout, op, out, status);
@@ -294,7 +325,7 @@ module PR_EX_MEM(clk, ctl_mem_in, ctl_wb_in, alu_in, c_in,
 	always @(posedge clk) begin
 		ctl_mem_out <= ctl_mem_in;
 		ctl_wb_out <= ctl_wb_in;
-		ex_out <= alu_out;
+		alu_out <= alu_in;
 		c_out <= c_in;
 	end
 endmodule: PR_EX_MEM

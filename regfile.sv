@@ -5,7 +5,7 @@ module regfile(clk, data_in, write, reg_w, reg_a, reg_b, out_a, out_b);
 	output reg [15:0] out_a, out_b;
 
 	wire [7:0] load;
-	wire [15:0] R0, R1, R2, R3, R4, R5, R6, R7;
+	reg [15:0] R0, R1, R2, R3, R4, R5, R6, R7;
 
 	assign load = {8{write}} & (8'b1 << reg_w);
 
@@ -43,4 +43,4 @@ module regfile(clk, data_in, write, reg_w, reg_a, reg_b, out_a, out_b);
 		if (load[6]) R6 <= data_in;
 		if (load[7]) R7 <= data_in;
 	end
-endmodule: regfiles
+endmodule: regfile
