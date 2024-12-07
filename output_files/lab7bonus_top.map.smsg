@@ -1,2 +1,0 @@
-Info (10281): Verilog HDL Declaration information at datapath.sv(6): object "reg_a" differs only in case from object "REG_A" in the same scope File: C:/Users/Wardo/Documents/2025/CPEN211/Simple-Risc-Machine/datapath.sv Line: 6
-Info (10281): Verilog HDL Declaration information at datapath.sv(6): object "reg_b" differs only in case from object "REG_B" in the same scope File: C:/Users/Wardo/Documents/2025/CPEN211/Simple-Risc-Machine/datapath.sv Line: 6
