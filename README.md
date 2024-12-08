@@ -1,14 +1,34 @@
-[![Review Assignment Due Date](https://classroom.github.com/assets/deadline-readme-button-22041afd0340ce965d47ae6ef1cefeee28c7c493a6346c4f15d667ab976d596c.svg)](https://classroom.github.com/a/H84oO7Rx)
-[![Open in Visual Studio Code](https://classroom.github.com/assets/open-in-vscode-2e0aaae1b6195c2367325f4f02e2d04e9abb55f0b24a779b69b11b9e10269abc.svg)](https://classroom.github.com/online_ide?assignment_repo_id=17389376&assignment_repo_type=AssignmentRepo)
-# starter-lab-7-bonus
+# RISC-V Machine Source Code for CPU Competition
 
-Lab 7 bonus ONLY: Do NOT use this repository for Lab 7 or your TA will not get
-your code during your marking session.
+This repository contains the RISC-V machine source code used in the CPEN 211 CPU competition held at the end of the semester.
 
-See the Lab 7 Bonus handout for detailed instructions for what you need to do
-for the bonus.
+## Performance Overview
+- **Main Branch**: Achieves **maximum 5 cycles per instruction**.
+- **Competition Results**: Ranked **3rd place** in terms of:
+  - Efficiency to compute multiple instructions.
+  - Maximum clock frequency achieved.
+  - Geometric Mean Speedup (compared to the unoptimized reference version).
+- **Pipelined Branch**: An experimental version of the RISC machine with pipelining is available in the `pipelined` branch. Although not fully debugged, it is theoretically **2-3x faster** than the current implementation.
 
-IMPORTANT:  Ensure your submission includes a Quartus project file and a
-Modelsim Project File and that both specify all (System)Verilog files required
-to synthesize your CPU or the autograder will not be able to compile your
-design and you will get zero marks for the bonus. 
+### Final Ranking and Scores
+![Final Ranking and Scores](images/rankings.png)
+
+---
+
+## Build Instructions
+The RISC machine is developed with:
+- **Quartus Prime 18.1**
+- **ModelSim 10.5b**
+
+It has been tested on the **Cyclone-V FPGA** using the **DE1-SoC** development board. While other Verilog tools and FPGAs may work, modifications to the top module and pin assignments may be required.
+
+### Build Process
+1. Add all `.sv` files to your project.
+2. Set `lab7bonus_top` as your top module.
+3. Create or modify `data.txt` to initialize system RAM.
+
+---
+
+## Important Note
+This work is the property of **Krish Thakur** and **Warrick Lo**. It **MUST NOT** be copied or reused in any form. Furthermore, this code will no longer function on any version of the CPEN 211 autograder.
+
