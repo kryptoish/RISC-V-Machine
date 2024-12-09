@@ -13,6 +13,9 @@ This repository contains the RISC processor source code used in the CPEN 211 CPU
 ### Final Ranking and Scores
 ![Final Ranking and Scores](images/rankings.png)
 
+> Note: The processors highlighted pipelined and reference are there to help competitors see how fast a pipelined processor is compared to a unoptimized non-pipelined risc processor.
+
+
 ---
 
 ## Build Instructions
